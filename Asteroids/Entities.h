@@ -7,6 +7,7 @@ struct Player
 {
 	Vector2 position;
 	float speed;
+	float rotation;
 	int totalPoints;
 	int availableLives;
 	bool isAlive;

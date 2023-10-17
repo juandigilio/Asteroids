@@ -16,23 +16,27 @@ namespace Globals
 {
 	extern const int screenWidth;
 	extern const int screenHeight;
+	extern bool loading;
 }
 
 namespace GameAssets
 {
-	Texture2D player;
+	extern Texture2D player;
 }
 
 namespace MenuAssets
 {
-	Texture2D background;
-	Texture2D play;
-	Texture2D instructions;
-	Texture2D credits;
-	Texture2D exit;
+	extern Texture2D background;
+	extern Texture2D play;
+	extern Texture2D instructions;
+	extern Texture2D credits;
+	extern Texture2D exit;
 
-	Vector2 playPos;
-	Vector2 instructionsPos;
-	Vector2 creditsPos;
-	Vector2 exitPos;
+	extern int menuSizeX;
+	extern int menuSizeY;
+
+	extern Vector2 playPos;
+	extern Vector2 instructionsPos;
+	extern Vector2 creditsPos;
+	extern Vector2 exitPos;
 }

@@ -1,40 +1,37 @@
 #include "MenuManager.h"
 
-
-
 #include "raylib.h"
 
 #include "GameData.h"
 #include "Entities.h"
-//#include "GameLoop.h"
+#include "GameLoop.h"
 
 using namespace Globals;
 using namespace MenuAssets;
 
 void InitMenu()
 {
-
-	background = LoadTexture("../Assets/Images/Menu/background.png");
-	play = LoadTexture("../Assets/Images/Menu/acid.png");
-	instructions = LoadTexture("../Assets/Images/Menu/ice.png");
-	credits = LoadTexture("../Assets/Images/Menu/big.png");
-	exit = LoadTexture("../Assets/Images/Menu/stone.png");
+	background = LoadTexture("Assets/Images/Menu/background.png");
+	play = LoadTexture("Assets/Images/Menu/acid.png");
+	instructions = LoadTexture("Assets/Images/Menu/ice.png");
+	credits = LoadTexture("Assets/Images/Menu/big.png");
+	exit = LoadTexture("Assets/Images/Menu/stone.png");
 
 	//menuFont = slLoadFont("../Assets/Fonts/DelaGothic.ttf");
 
 	//slSetTextAlign(SL_ALIGN_CENTER);
 
-	playPos.x = screenWidth / 2;
-	playPos.y = ((screenHeight / 5) * 4);
-	instructionsPos.x = screenWidth / 2;
-	instructionsPos.y = ((screenHeight / 5) * 3);
-	creditsPos.x = screenWidth / 2;
-	creditsPos.y = ((screenHeight / 5) * 2);
-	exitPos.x = (screenWidth / 2);
-	exitPos.y = (screenHeight / 5);
+	playPos.x = (screenWidth / 2) - (menuSizeX / 2);
+	playPos.y = ((screenHeight / 5) * 4) - (menuSizeY / 2);
+	instructionsPos.x = (screenWidth / 2) - (menuSizeX / 2);
+	instructionsPos.y = ((screenHeight / 5) * 3) - (menuSizeY / 2);
+	creditsPos.x = (screenWidth / 2) - (menuSizeX / 2);
+	creditsPos.y = ((screenHeight / 5) * 2) - (menuSizeY / 2);
+	exitPos.x = (screenWidth / 2) - (menuSizeX / 2);
+	exitPos.y = (screenHeight / 5) - (menuSizeY / 2);
 }
 
-void Draw()
+static void Draw()
 {
 	DrawTexture(background, 0, 0, WHITE);
 	DrawTextureEx(play, playPos, 0, 1.0, WHITE);
@@ -65,57 +62,59 @@ void Draw()
 	slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);*/
 }
 
-void GetInput(GameSceen& currentSceen)
+static void GetInput(GameSceen& currentSceen)
 {
-	/*slSetForeColor(1.0f, 0.47f, 0.0f, 1.0f);
+	int menuSizeX = 200;
+	int menuSizeY = 100;
+	//SetForeColor(1.0f, 0.47f, 0.0f, 1.0f);
 
-	if ((slGetMouseX() > acidPosX - menuSizeX / 2 && slGetMouseX() < acidPosX + menuSizeX / 2) &&
-		(slGetMouseY() > acidPosY - menuSizeY / 2 && slGetMouseY() < acidPosY + menuSizeY / 2))
+	if ((GetMouseX() > playPos.x - menuSizeX / 2 && GetMouseX() < playPos.x + menuSizeX / 2) &&
+		(GetMouseY() > playPos.y - menuSizeY / 2 && GetMouseY() < playPos.y + menuSizeY / 2))
 	{
-		slSetFont(menuFont, 45);
-		slText(acidPosX, acidPosY - 6, "Play");
+		//SetFont(menuFont, 45);
+		//Text(acidPosX, acidPosY - 6, "Play");
 
-		if (slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = GAME;
 		}
 	}
-	else if ((slGetMouseX() > stonePosX - menuSizeX / 2 && slGetMouseX() < stonePosX + menuSizeX / 2) &&
-		(slGetMouseY() > stonePosY - menuSizeY / 2 && slGetMouseY() < stonePosY + menuSizeY / 2))
+	else if ((GetMouseX() > instructionsPos.x - menuSizeX / 2 && GetMouseX() < instructionsPos.x + menuSizeX / 2) &&
+		(GetMouseY() > instructionsPos.y - menuSizeY / 2 && GetMouseY() < instructionsPos.y + menuSizeY / 2))
 	{
-		slSetFont(menuFont, 40);
-		slText(stonePosX - 3, stonePosY - 22, "Exit");
+		/*SetFont(menuFont, 40);
+		Text(stonePosX - 3, stonePosY - 22, "Exit");*/
 
-		if (slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
-		{
-			currentSceen = EXIT;
-		}
-	}
-	else if ((slGetMouseX() > bigPosX - menuSizeX / 2 && slGetMouseX() < bigPosX + menuSizeX / 2) &&
-		(slGetMouseY() > bigPosY - menuSizeY / 2 && slGetMouseY() < bigPosY + menuSizeY / 2))
-	{
-		slSetFont(menuFont, 30);
-		slText(bigPosX, bigPosY - 9, "Credits");
-
-		if (slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
-		{
-			currentSceen = CREDITS;
-		}
-	}
-	else if ((slGetMouseX() > icePosX - menuSizeX / 2 && slGetMouseX() < icePosX + menuSizeX / 2) &&
-		(slGetMouseY() > icePosY - menuSizeY / 2 && slGetMouseY() < icePosY + menuSizeY / 2))
-	{
-		slSetFont(menuFont, 25);
-		slText(icePosX, icePosY - 6, "Istructions");
-
-		if (slGetMouseButton(SL_MOUSE_BUTTON_LEFT))
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = INSTRUCTIONS;
 		}
 	}
+	else if ((GetMouseX() > creditsPos.x - menuSizeX / 2 && GetMouseX() < creditsPos.x + menuSizeX / 2) &&
+		(GetMouseY() > creditsPos.y - menuSizeY / 2 && GetMouseY() < creditsPos.y + menuSizeY / 2))
+	{
+		/*slSetFont(menuFont, 30);
+		slText(bigPosX, bigPosY - 9, "Credits");*/
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			currentSceen = CREDITS;
+		}
+	}
+	else if ((GetMouseX() > exitPos.x - menuSizeX / 2 && GetMouseX() < exitPos.x + menuSizeX / 2) &&
+		(GetMouseY() > exitPos.y - menuSizeY / 2 && GetMouseY() < exitPos.y + menuSizeY / 2))
+	{
+		/*slSetFont(menuFont, 25);
+		slText(icePosX, icePosY - 6, "Istructions");*/
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			currentSceen = EXIT;
+		}
+	}
 
 
-	slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);*/
+	//slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void ShowMenu(GameSceen& currentSceen)
@@ -189,7 +188,7 @@ void StartUp()
 			}
 			case GAME:
 			{
-				//Play(player, ball, bricks, currentSceen);
+				Play(player, currentSceen);
 				break;
 			}
 			case INSTRUCTIONS:
@@ -211,6 +210,4 @@ void StartUp()
 
 		EndDrawing();
 	}
-
-
 }
