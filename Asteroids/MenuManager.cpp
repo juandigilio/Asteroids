@@ -9,35 +9,39 @@
 //#include "GameLoop.h"
 
 using namespace Globals;
+using namespace MenuAssets;
 
 void InitMenu()
 {
 
-	//menuBackground = slLoadTexture("../Assets/Images/menuBackground.png");
-	//acidBrick = slLoadTexture("../Assets/Images/acid.png");
-	//iceBrick = slLoadTexture("../Assets/Images/ice.png");
-	//bigBrick = slLoadTexture("../Assets/Images/big.png");
-	//stoneBrick = slLoadTexture("../Assets/Images/stone.png");
+	background = LoadTexture("../Assets/Images/Menu/background.png");
+	play = LoadTexture("../Assets/Images/Menu/acid.png");
+	instructions = LoadTexture("../Assets/Images/Menu/ice.png");
+	credits = LoadTexture("../Assets/Images/Menu/big.png");
+	exit = LoadTexture("../Assets/Images/Menu/stone.png");
 
 	//menuFont = slLoadFont("../Assets/Fonts/DelaGothic.ttf");
 
 	//slSetTextAlign(SL_ALIGN_CENTER);
 
-	//acidPosX = screenWidth / 2;
-	//acidPosY = ((screenHeight / 5) * 4);
-	//icePosX = screenWidth / 2;
-	//icePosY = ((screenHeight / 5) * 3);
-	//bigPosX = screenWidth / 2;
-	//bigPosY = ((screenHeight / 5) * 2);
-	//stonePosX = (screenWidth / 2);
-	//stonePosY = (screenHeight / 5);
-
-	//menuSizeX = 200;
-	//menuSizeY = 80;
+	playPos.x = screenWidth / 2;
+	playPos.y = ((screenHeight / 5) * 4);
+	instructionsPos.x = screenWidth / 2;
+	instructionsPos.y = ((screenHeight / 5) * 3);
+	creditsPos.x = screenWidth / 2;
+	creditsPos.y = ((screenHeight / 5) * 2);
+	exitPos.x = (screenWidth / 2);
+	exitPos.y = (screenHeight / 5);
 }
 
 void Draw()
 {
+	DrawTexture(background, 0, 0, WHITE);
+	DrawTextureEx(play, playPos, 0, 1.0, WHITE);
+	DrawTextureEx(instructions, instructionsPos, 0, 1.0, WHITE);
+	DrawTextureEx(credits, creditsPos, 0, 1.0, WHITE);
+	DrawTextureEx(exit, exitPos, 0, 1.0, WHITE);
+
 	/*slSprite(menuBackground, screenWidth / 2, screenHeight / 2, screenWidth * 1.2, screenHeight);
 	slSprite(acidBrick, acidPosX, acidPosY, menuSizeX, menuSizeY);
 	slSprite(iceBrick, icePosX, icePosY, menuSizeX, menuSizeY);
