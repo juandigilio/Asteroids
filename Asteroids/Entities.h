@@ -14,6 +14,16 @@ struct Player
 	bool isAlive;
 	bool isMoving;
 	Texture2D texture;
+
+	void Acelerate()
+	{
+		speed += 0.0001;
+
+		if (speed >= 0.15f)
+		{
+			speed = 0.15f;
+		}
+	}
 };
 
 struct Asteroid

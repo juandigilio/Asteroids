@@ -14,29 +14,39 @@ static void GetInput(Player& player)
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
     {
- 
-        Vector2 direction = Vector2Subtract(GetMousePosition(), player.position);
+        player.speed += 0.0001;
 
-        float length = Vector2Length(direction);
-
-        if (length > 5)
+        if (player.speed >= 0.15f)
         {
-            direction = Vector2Divide(direction,  { length, length });
+            player.speed = 0.15f;
         }
-
-        player.velocity = Vector2Scale(direction, player.speed);
 
         player.isMoving = true;
     }
     else
     {
+        player.speed -= 0.00009f;
+
+        if (player.speed < 0.00002f)
+        {
+            player.speed = 0.00002f;
+        }
+
         player.isMoving = false;
     }
 
-    if (player.isMoving)
+    Vector2 direction = Vector2Subtract(GetMousePosition(), player.position);
+
+    float length = Vector2Length(direction);
+
+    if (length > 5)
     {
-        player.position = Vector2Add(player.position, player.velocity);
+        direction = Vector2Divide(direction, { length, length });
     }
+
+    player.velocity = Vector2Scale(direction, player.speed);
+   
+    player.position = Vector2Add(player.position, player.velocity);
 }
 
 static void Draw(Player player)
