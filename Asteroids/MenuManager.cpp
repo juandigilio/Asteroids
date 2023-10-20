@@ -17,10 +17,6 @@ void InitMenu()
 	credits = LoadTexture("Assets/Images/Menu/big.png");
 	exit = LoadTexture("Assets/Images/Menu/stone.png");
 
-	//menuFont = slLoadFont("../Assets/Fonts/DelaGothic.ttf");
-
-	//slSetTextAlign(SL_ALIGN_CENTER);
-
 	playPos.x = (screenWidth / 2) - (menuSizeX / 2);
 	playPos.y = ((screenHeight / 5) * 4) - (menuSizeY / 2);
 	instructionsPos.x = (screenWidth / 2) - (menuSizeX / 2);
@@ -38,28 +34,6 @@ static void Draw()
 	DrawTextureEx(instructions, instructionsPos, 0, 1.0, WHITE);
 	DrawTextureEx(credits, creditsPos, 0, 1.0, WHITE);
 	DrawTextureEx(exit, exitPos, 0, 1.0, WHITE);
-
-	/*slSprite(menuBackground, screenWidth / 2, screenHeight / 2, screenWidth * 1.2, screenHeight);
-	slSprite(acidBrick, acidPosX, acidPosY, menuSizeX, menuSizeY);
-	slSprite(iceBrick, icePosX, icePosY, menuSizeX, menuSizeY);
-	slSprite(bigBrick, bigPosX, bigPosY, menuSizeX, menuSizeY);
-	slSprite(stoneBrick, stonePosX, stonePosY, menuSizeX, menuSizeY);
-
-	slSetForeColor(0.471f, 0.471f, 0.471f, 1.0f);
-
-	slSetFont(menuFont, 45);
-	slText(acidPosX, acidPosY - 6, "Play");
-
-	slSetFont(menuFont, 40);
-	slText(stonePosX - 3, stonePosY - 22, "Exit");
-
-	slSetFont(menuFont, 30);
-	slText(bigPosX, bigPosY - 9, "Credits");
-
-	slSetFont(menuFont, 25);
-	slText(icePosX, icePosY - 6, "Istructions");
-
-	slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);*/
 }
 
 static void GetInput(GameSceen& currentSceen)
@@ -76,7 +50,7 @@ static void GetInput(GameSceen& currentSceen)
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			currentSceen = GAME;
+			currentSceen = GameSceen::GAME;
 		}
 	}
 	else if ((GetMouseX() > instructionsPos.x - menuSizeX / 2 && GetMouseX() < instructionsPos.x + menuSizeX / 2) &&
@@ -87,7 +61,7 @@ static void GetInput(GameSceen& currentSceen)
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			currentSceen = INSTRUCTIONS;
+			currentSceen = GameSceen::INSTRUCTIONS;
 		}
 	}
 	else if ((GetMouseX() > creditsPos.x - menuSizeX / 2 && GetMouseX() < creditsPos.x + menuSizeX / 2) &&
@@ -98,7 +72,7 @@ static void GetInput(GameSceen& currentSceen)
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			currentSceen = CREDITS;
+			currentSceen = GameSceen::CREDITS;
 		}
 	}
 	else if ((GetMouseX() > exitPos.x - menuSizeX / 2 && GetMouseX() < exitPos.x + menuSizeX / 2) &&
@@ -109,10 +83,14 @@ static void GetInput(GameSceen& currentSceen)
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			currentSceen = EXIT;
+			currentSceen = GameSceen::EXIT;
 		}
 	}
 
+	if (currentSceen == GameSceen::PAUSE)
+	{
+
+	}
 
 	//slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
@@ -166,7 +144,7 @@ void ShowCredits(GameSceen& currentSceen)
 
 void StartUp()
 {
-	GameSceen currentSceen = MENU;
+	GameSceen currentSceen = GameSceen::MENU;
 	Player player;
 
 	InitWindow(screenWidth, screenHeight, "After-Roids");
@@ -181,27 +159,31 @@ void StartUp()
 
 		switch (currentSceen)
 		{
-			case MENU:
+			case GameSceen::MENU:
 			{
 				ShowMenu(currentSceen);
 				break;
 			}
-			case GAME:
+			case GameSceen::GAME:
 			{
 				Play(player, currentSceen);
 				break;
 			}
-			case INSTRUCTIONS:
+			case GameSceen::PAUSE:
+			{
+				break;
+			}
+			case GameSceen::INSTRUCTIONS:
 			{
 				ShowInstructions(currentSceen);
 				break;
 			}
-			case CREDITS:
+			case GameSceen::CREDITS:
 			{
 				ShowCredits(currentSceen);
 				break;
 			}
-			case EXIT:
+			case GameSceen::EXIT:
 			{
 				CloseWindow();
 				break;

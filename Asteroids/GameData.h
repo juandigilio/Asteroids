@@ -2,10 +2,11 @@
 
 #include "raylib.h"
 
-enum GameSceen
+enum class GameSceen
 {
 	MENU,
 	GAME,
+	PAUSE,
 	INSTRUCTIONS,
 	CREDITS,
 	EXIT,
