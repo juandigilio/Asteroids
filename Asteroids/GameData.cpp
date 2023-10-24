@@ -8,8 +8,4 @@ namespace Globals
 	extern bool loading = true;
 }
 
-namespace GameAssets
-{
-	extern Texture2D player{};
-}
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "raylib.h"
-
 enum class GameSceen
 {
 	MENU,
@@ -20,9 +18,6 @@ namespace Globals
 	extern bool loading;
 }
 
-namespace GameAssets
-{
-	extern Texture2D player;
-}
+
 
 

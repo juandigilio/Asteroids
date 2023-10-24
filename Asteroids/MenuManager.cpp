@@ -29,7 +29,7 @@ void InitMenu()
 	play = LoadTexture("Assets/Images/Menu/acid.png");
 	instructions = LoadTexture("Assets/Images/Menu/ice.png");
 	credits = LoadTexture("Assets/Images/Menu/big.png");
-	exit = LoadTexture("Assets/Images/Menu/stone.png");
+	Assets::exit = LoadTexture("Assets/Images/Menu/stone.png");
 
 	playPos.x = (screenWidth / 2) - (menuSizeX / 2);
 	playPos.y = ((screenHeight / 5) * 4) - (menuSizeY / 2);
@@ -47,66 +47,44 @@ static void Draw()
 	DrawTextureEx(play, playPos, 0, 1.0, WHITE);
 	DrawTextureEx(instructions, instructionsPos, 0, 1.0, WHITE);
 	DrawTextureEx(credits, creditsPos, 0, 1.0, WHITE);
-	DrawTextureEx(exit, exitPos, 0, 1.0, WHITE);
+	DrawTextureEx(Assets::exit, exitPos, 0, 1.0, WHITE);
 }
 
 static void GetInput(GameSceen& currentSceen)
 {
 	int menuSizeX = 200;
 	int menuSizeY = 100;
-	//SetForeColor(1.0f, 0.47f, 0.0f, 1.0f);
+	int mouseX = GetMouseX();
+	int mouseY = GetMouseY();
 
-	if ((GetMouseX() > playPos.x - menuSizeX / 2 && GetMouseX() < playPos.x + menuSizeX / 2) &&
-		(GetMouseY() > playPos.y - menuSizeY / 2 && GetMouseY() < playPos.y + menuSizeY / 2))
+	if ((mouseX > playPos.x && mouseX < playPos.x + menuSizeX) && (mouseY > playPos.y && mouseY < playPos.y + menuSizeY))
 	{
-		//SetFont(menuFont, 45);
-		//Text(acidPosX, acidPosY - 6, "Play");
-
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = GameSceen::GAME;
 		}
 	}
-	else if ((GetMouseX() > instructionsPos.x - menuSizeX / 2 && GetMouseX() < instructionsPos.x + menuSizeX / 2) &&
-		(GetMouseY() > instructionsPos.y - menuSizeY / 2 && GetMouseY() < instructionsPos.y + menuSizeY / 2))
+	else if ((mouseX > instructionsPos.x && mouseX < instructionsPos.x + menuSizeX) && (mouseY > instructionsPos.y && mouseY < instructionsPos.y + menuSizeY))
 	{
-		/*SetFont(menuFont, 40);
-		Text(stonePosX - 3, stonePosY - 22, "Exit");*/
-
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = GameSceen::INSTRUCTIONS;
 		}
 	}
-	else if ((GetMouseX() > creditsPos.x - menuSizeX / 2 && GetMouseX() < creditsPos.x + menuSizeX / 2) &&
-		(GetMouseY() > creditsPos.y - menuSizeY / 2 && GetMouseY() < creditsPos.y + menuSizeY / 2))
+	else if ((mouseX > creditsPos.x && mouseX < creditsPos.x + menuSizeX) && (mouseY > creditsPos.y && mouseY < creditsPos.y + menuSizeY))
 	{
-		/*slSetFont(menuFont, 30);
-		slText(bigPosX, bigPosY - 9, "Credits");*/
-
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = GameSceen::CREDITS;
 		}
 	}
-	else if ((GetMouseX() > exitPos.x - menuSizeX / 2 && GetMouseX() < exitPos.x + menuSizeX / 2) &&
-		(GetMouseY() > exitPos.y - menuSizeY / 2 && GetMouseY() < exitPos.y + menuSizeY / 2))
+	else if ((mouseX > exitPos.x && mouseX < exitPos.x + menuSizeX) && (mouseY > exitPos.y && mouseY < exitPos.y + menuSizeY))
 	{
-		/*slSetFont(menuFont, 25);
-		slText(icePosX, icePosY - 6, "Istructions");*/
-
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			currentSceen = GameSceen::EXIT;
 		}
 	}
-
-	if (currentSceen == GameSceen::PAUSE)
-	{
-
-	}
-
-	//slSetForeColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void ShowMenu(GameSceen& currentSceen)
@@ -165,43 +143,42 @@ void StartUp()
 
 	InitMenu();
 
-
-	while (!WindowShouldClose())
+	while (player.isAlive && currentSceen != GameSceen::EXIT)
 	{
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 
 		switch (currentSceen)
 		{
-			case GameSceen::MENU:
-			{
-				ShowMenu(currentSceen);
-				break;
-			}
-			case GameSceen::GAME:
-			{
-				Play(player, currentSceen);
-				break;
-			}
-			case GameSceen::PAUSE:
-			{
-				break;
-			}
-			case GameSceen::INSTRUCTIONS:
-			{
-				ShowInstructions(currentSceen);
-				break;
-			}
-			case GameSceen::CREDITS:
-			{
-				ShowCredits(currentSceen);
-				break;
-			}
-			case GameSceen::EXIT:
-			{
-				CloseWindow();
-				break;
-			}
+		case GameSceen::MENU:
+		{
+			ShowMenu(currentSceen);
+			break;
+		}
+		case GameSceen::GAME:
+		{
+			Play(player, currentSceen);
+			break;
+		}
+		case GameSceen::PAUSE:
+		{
+			break;
+		}
+		case GameSceen::INSTRUCTIONS:
+		{
+			ShowInstructions(currentSceen);
+			break;
+		}
+		case GameSceen::CREDITS:
+		{
+			ShowCredits(currentSceen);
+			break;
+		}
+		case GameSceen::EXIT:
+		{
+			CloseWindow();
+			break;
+		}
 		}
 
 		EndDrawing();
