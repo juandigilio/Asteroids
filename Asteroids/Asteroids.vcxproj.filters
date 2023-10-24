@@ -27,9 +27,6 @@
     <ClCompile Include="GameLoop.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="GameFunctions.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuManager.h">
@@ -41,13 +38,13 @@
     <ClInclude Include="GameLoop.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="GameFunctions.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Asteroid.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroids.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

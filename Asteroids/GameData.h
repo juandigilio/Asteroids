@@ -17,7 +17,3 @@ namespace Globals
 	extern const int screenHeight;
 	extern bool loading;
 }
-
-
-
-

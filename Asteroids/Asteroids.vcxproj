@@ -152,15 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameData.cpp" />
-    <ClCompile Include="GameFunctions.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="Asteroids.h" />
     <ClInclude Include="GameData.h" />
-    <ClInclude Include="GameFunctions.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="Player.h" />

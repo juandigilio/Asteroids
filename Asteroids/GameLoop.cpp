@@ -2,9 +2,6 @@
 
 #include "raymath.h"
 
-#include "GameFunctions.h"
-
-//using namespace Globals;
 
 void GameLoop(Player& player, GameSceen& gamseSceen)
 {
