@@ -1,10 +1,8 @@
 #include "GameLoop.h"
 
 #include "raymath.h"
-//#include <cmath>
 
 #include "GameFunctions.h"
-#include "GameData.h"
 
 using namespace Globals;
 
@@ -20,10 +18,8 @@ static void GetInput(Player& player)
         {
             player.speed = 0.15f;
         }
-
-        player.isMoving = true;
     }
-    else
+ /*   else
     {
         player.speed -= 0.00009f;
 
@@ -33,7 +29,7 @@ static void GetInput(Player& player)
         }
 
         player.isMoving = false;
-    }
+    }*/
 
     Vector2 direction = Vector2Subtract(GetMousePosition(), player.position);
 

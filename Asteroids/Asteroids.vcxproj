@@ -158,11 +158,12 @@
     <ClCompile Include="MenuManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entities.h" />
+    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameFunctions.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

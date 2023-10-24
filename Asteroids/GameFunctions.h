@@ -1,5 +1,5 @@
 #pragma once
 
-#include "Entities.h"
+#include "Player.h"
 
 void InitGame(Player& player);

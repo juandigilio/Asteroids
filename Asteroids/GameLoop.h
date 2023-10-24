@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entities.h"
+#include "Player.h"
 #include "GameData.h"
 
 void Play(Player& player, GameSceen& gameSceen);
