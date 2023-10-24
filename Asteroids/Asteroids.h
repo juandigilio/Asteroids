@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+
 struct CuarterAsteroid
 {
 	Texture2D texture;
