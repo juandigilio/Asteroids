@@ -18,9 +18,36 @@ struct CuarterAsteroid
 	Vector2 position{};
 	Vector2 direction{};
 	Vector2 velocity{};
-	float speed = 0.06f;
+	float speed = 0.04f;
 	float rotation = 0.0f;
 	bool isAlive = false;
+
+	void Move()
+	{
+		velocity = Vector2Scale(direction, speed);
+		position = Vector2Add(position, velocity);
+
+		if (position.x > screenWidth + texture.width / 2)
+		{
+			position.x = (-texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.x < 0.0f - texture.width / 2)
+		{
+			position.x = screenWidth + (texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.y > screenHeight + texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = (-texture.height / 2);
+		}
+		else if (position.y < 0.0f - texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = screenHeight + (texture.height / 2);
+		}
+	}
 };
 
 struct MidAsteroid
@@ -35,6 +62,33 @@ struct MidAsteroid
 
 	CuarterAsteroid cuarter1{};
 	CuarterAsteroid cuarter2{};
+
+	void Move()
+	{
+		velocity = Vector2Scale(direction, speed);
+		position = Vector2Add(position, velocity);
+
+		if (position.x > screenWidth + texture.width / 2)
+		{
+			position.x = (-texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.x < 0.0f - texture.width / 2)
+		{
+			position.x = screenWidth + (texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.y > screenHeight + texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = (-texture.height / 2);
+		}
+		else if (position.y < 0.0f - texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = screenHeight + (texture.height / 2);
+		}
+	}
 };
 
 struct Asteroid
@@ -43,12 +97,39 @@ struct Asteroid
 	Vector2 position{};
 	Vector2 direction{};
 	Vector2 velocity{};
-	float speed = 0.1f;
+	float speed = 0.05f;
 	float rotation = 0.0f;
 	bool isAlive = false;
 
 	MidAsteroid half1{};
 	MidAsteroid half2{};
+
+	void Move()
+	{
+		velocity = Vector2Scale(direction, speed);
+		position = Vector2Add(position, velocity);
+
+		if (position.x > screenWidth + texture.width / 2)
+		{
+			position.x = (-texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.x < 0.0f - texture.width / 2)
+		{
+			position.x = screenWidth + (texture.width / 2);
+			position.y = screenHeight - position.y;
+		}
+		else if (position.y > screenHeight + texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = (-texture.height / 2);
+		}
+		else if (position.y < 0.0f - texture.height / 2)
+		{
+			position.x = screenWidth - position.y;
+			position.y = screenHeight + (texture.height / 2);
+		}
+	}
 };
 
 static void Load(Asteroid asteroids[])
@@ -200,7 +281,7 @@ static void Update(Asteroid asteroids[], Player player)
 {
 	float elapsedTime = GetTime() - lastDrop;
 
-	if (activeAsteroids < asteroidsQnty && elapsedTime > 1.8f)
+	if (activeAsteroids < asteroidsQnty && elapsedTime > 3.0f)
 	{
 		for (int i = 0; i < asteroidsQnty; i++)
 		{
@@ -219,48 +300,41 @@ static void Update(Asteroid asteroids[], Player player)
 	{
 		if (asteroids[i].isAlive)
 		{
-			asteroids[i].velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-			asteroids[i].position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+			asteroids[i].Move();
 		}
 		else
 		{
 			if (asteroids[i].half1.isAlive)
 			{
-				asteroids[i].half1.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-				asteroids[i].half1.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+				asteroids[i].half1.Move();
 			}
 			else
 			{
 				if (asteroids[i].half1.cuarter1.isAlive)
 				{
-					asteroids[i].half1.cuarter1.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-					asteroids[i].half1.cuarter1.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+					asteroids[i].half1.cuarter1.Move();
 				}
 
 				if (asteroids[i].half1.cuarter2.isAlive)
 				{
-					asteroids[i].half1.cuarter2.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-					asteroids[i].half1.cuarter2.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+					asteroids[i].half1.cuarter2.Move();
 				}
 			}
 
 			if (asteroids[i].half2.isAlive)
 			{
-				asteroids[i].half2.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-				asteroids[i].half2.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+				asteroids[i].half2.Move();
 			}
 			else
 			{
 				if (asteroids[i].half2.cuarter1.isAlive)
 				{
-					asteroids[i].half2.cuarter1.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-					asteroids[i].half2.cuarter1.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+					asteroids[i].half2.cuarter1.Move();
 				}
 
 				if (asteroids[i].half2.cuarter2.isAlive)
 				{
-					asteroids[i].half2.cuarter2.velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed);
-					asteroids[i].half2.cuarter2.position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
+					asteroids[i].half2.cuarter2.Move();
 				}
 			}
 		}

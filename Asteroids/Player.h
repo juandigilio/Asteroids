@@ -16,6 +16,7 @@ struct Player
 	Vector2 velocity;
 	Vector2 direction;
 	float speed = 0.0f;
+    float maxSpeed = 0.055;
 	float rotation = 0.0f;
     float targetRotation;
 	int totalPoints = 0;
@@ -33,17 +34,17 @@ static void Load(Player& player)
 
 static void GetInput(Player& player, GameSceen& currentSceen)
 {
-    const float interpolationFactor = 0.0015f;
+    const float interpolationFactor = 0.001f;
 
     player.rotation = (atan2(static_cast<double>(GetMousePosition().y) - player.position.y, static_cast<double>(GetMousePosition().x) - player.position.x)) * RAD2DEG + 90;
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
     {
-        player.speed += 0.0001;
+        player.speed += 0.00001;
 
-        if (player.speed >= 0.08f)
+        if (player.speed >= player.maxSpeed)
         {
-            player.speed = 0.08f;
+            player.speed = player.maxSpeed;
         }
 
         Vector2 targetDirection = Vector2Subtract(GetMousePosition(), player.position);
