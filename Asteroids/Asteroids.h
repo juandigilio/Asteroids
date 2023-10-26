@@ -8,7 +8,7 @@
 
 using namespace Globals;
 
-static const int asteroidsQnty = 4;
+static const int asteroidsQnty = 10;
 static int activeAsteroids = 0;
 static float lastDrop = 0.0f;
 
@@ -24,7 +24,7 @@ struct CuarterAsteroid
 
 	void Move()
 	{
-		velocity = Vector2Scale(direction, speed);
+		velocity = Vector2Scale(direction, speed * GetFrameTime());
 		position = Vector2Add(position, velocity);
 
 		if (position.x > screenWidth + texture.width / 2)
@@ -65,7 +65,7 @@ struct MidAsteroid
 
 	void Move()
 	{
-		velocity = Vector2Scale(direction, speed);
+		velocity = Vector2Scale(direction, speed * GetFrameTime());
 		position = Vector2Add(position, velocity);
 
 		if (position.x > screenWidth + texture.width / 2)
@@ -97,7 +97,7 @@ struct Asteroid
 	Vector2 position{};
 	Vector2 direction{};
 	Vector2 velocity{};
-	float speed = 0.05f;
+	float speed = 120.0f;
 	float rotation = 0.0f;
 	bool isAlive = false;
 
@@ -106,7 +106,7 @@ struct Asteroid
 
 	void Move()
 	{
-		velocity = Vector2Scale(direction, speed);
+		velocity = Vector2Scale(direction, speed * GetFrameTime());
 		position = Vector2Add(position, velocity);
 
 		if (position.x > screenWidth + texture.width / 2)
