@@ -142,6 +142,8 @@ void StartUp()
 	Player player;
 	Asteroid asteroids[asteroidsQnty];
 
+	srand(time(NULL));
+
 	InitWindow(screenWidth, screenHeight, "After-Roids");
 
 	InitMenu();

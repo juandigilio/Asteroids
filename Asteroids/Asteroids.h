@@ -8,7 +8,7 @@
 
 using namespace Globals;
 
-static const int asteroidsQnty = 5;
+static const int asteroidsQnty = 4;
 static int activeAsteroids = 0;
 static float lastDrop = 0.0f;
 
@@ -39,12 +39,12 @@ struct CuarterAsteroid
 		}
 		else if (position.y > screenHeight + texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = (-texture.height / 2);
 		}
 		else if (position.y < 0.0f - texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = screenHeight + (texture.height / 2);
 		}
 	}
@@ -80,12 +80,12 @@ struct MidAsteroid
 		}
 		else if (position.y > screenHeight + texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = (-texture.height / 2);
 		}
 		else if (position.y < 0.0f - texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = screenHeight + (texture.height / 2);
 		}
 	}
@@ -121,12 +121,12 @@ struct Asteroid
 		}
 		else if (position.y > screenHeight + texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = (-texture.height / 2);
 		}
 		else if (position.y < 0.0f - texture.height / 2)
 		{
-			position.x = screenWidth - position.y;
+			position.x = screenWidth - position.x;
 			position.y = screenHeight + (texture.height / 2);
 		}
 	}
@@ -148,8 +148,6 @@ static void Load(Asteroid asteroids[])
 
 static void Spawn(Asteroid& asteroid, Player player)
 {
-	srand(time(NULL));
-
 	int spawnPoint;
 	int playerSector;
 
@@ -158,15 +156,15 @@ static void Spawn(Asteroid& asteroid, Player player)
 	Vector2 spawner3{ static_cast<float>(screenWidth),0.0f };
 	Vector2 spawner4{ static_cast<float>(screenWidth),static_cast<float>(screenHeight) };
 
-	if (player.position.x < screenWidth / 2 && player.position.y < screenWidth / 2)
+	if (player.position.x < screenWidth / 2 && player.position.y < screenHeight / 2)
 	{
 		playerSector = 0;
 	}
-	else if (player.position.x > screenWidth / 2 && player.position.y < screenWidth / 2)
+	else if (player.position.x > screenWidth / 2 && player.position.y < screenHeight / 2)
 	{
 		playerSector = 1;
 	}
-	else if (player.position.x < screenWidth / 2 && player.position.y > screenWidth / 2)
+	else if (player.position.x < screenWidth / 2 && player.position.y > screenHeight / 2)
 	{
 		playerSector = 2;
 	}
@@ -290,10 +288,12 @@ static void Update(Asteroid asteroids[], Player player)
 				Spawn(asteroids[i], player);
 				activeAsteroids++;
 				lastDrop = GetTime();
+				std::cout << "Active instances: " << activeAsteroids << std::endl;
 				break;
 			}
 		}
 	}
+
 
 
 	for (int i = 0; i < asteroidsQnty; i++)
