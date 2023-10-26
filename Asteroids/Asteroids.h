@@ -18,7 +18,7 @@ struct CuarterAsteroid
 	Vector2 position{};
 	Vector2 direction{};
 	Vector2 velocity{};
-	float speed = 0.1f;
+	float speed = 0.06f;
 	float rotation = 0.0f;
 	bool isAlive = false;
 };
@@ -200,7 +200,7 @@ static void Update(Asteroid asteroids[], Player player)
 {
 	float elapsedTime = GetTime() - lastDrop;
 
-	if (activeAsteroids < asteroidsQnty && elapsedTime > 0.001f)
+	if (activeAsteroids < asteroidsQnty && elapsedTime > 1.8f)
 	{
 		for (int i = 0; i < asteroidsQnty; i++)
 		{
@@ -208,6 +208,7 @@ static void Update(Asteroid asteroids[], Player player)
 			{
 				Spawn(asteroids[i], player);
 				activeAsteroids++;
+				lastDrop = GetTime();
 				break;
 			}
 		}

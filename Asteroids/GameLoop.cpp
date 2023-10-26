@@ -9,6 +9,7 @@ void GameLoop(Player& player, Asteroid asteroids[], GameSceen& gamseSceen)
 	Update(asteroids, player);
 	Update(player);
 	Draw(player);
+	Draw(asteroids);
 }
 
 void Play(Player& player, Asteroid asteroids[], GameSceen& gamseSceen)
