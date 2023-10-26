@@ -10,7 +10,6 @@ enum class GameSceen
 	EXIT,
 };
 
-
 namespace Globals
 {
 	extern const int screenWidth;

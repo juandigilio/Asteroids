@@ -157,7 +157,6 @@
     <ClCompile Include="MenuManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="Asteroids.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameLoop.h" />

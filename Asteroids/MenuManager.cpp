@@ -1,6 +1,8 @@
 #include "MenuManager.h"
 
 #include "GameData.h"
+#include "Player.h"
+#include "Asteroids.h"
 #include "GameLoop.h"
 
 namespace Assets
@@ -32,13 +34,13 @@ void InitMenu()
 	Assets::exit = LoadTexture("Assets/Images/Menu/stone.png");
 
 	playPos.x = (screenWidth / 2) - (menuSizeX / 2);
-	playPos.y = ((screenHeight / 5) * 4) - (menuSizeY / 2);
+	playPos.y = ((screenHeight / 5)) - (menuSizeY / 2);
 	instructionsPos.x = (screenWidth / 2) - (menuSizeX / 2);
-	instructionsPos.y = ((screenHeight / 5) * 3) - (menuSizeY / 2);
+	instructionsPos.y = ((screenHeight / 5) * 2) - (menuSizeY / 2);
 	creditsPos.x = (screenWidth / 2) - (menuSizeX / 2);
-	creditsPos.y = ((screenHeight / 5) * 2) - (menuSizeY / 2);
+	creditsPos.y = ((screenHeight / 5) * 3) - (menuSizeY / 2);
 	exitPos.x = (screenWidth / 2) - (menuSizeX / 2);
-	exitPos.y = (screenHeight / 5) - (menuSizeY / 2);
+	exitPos.y = (screenHeight / 5) * 4 - (menuSizeY / 2);
 }
 
 static void Draw()
@@ -138,6 +140,7 @@ void StartUp()
 {
 	GameSceen currentSceen = GameSceen::MENU;
 	Player player;
+	Asteroid asteroids[asteroidsQnty];
 
 	InitWindow(screenWidth, screenHeight, "After-Roids");
 
@@ -157,7 +160,7 @@ void StartUp()
 		}
 		case GameSceen::GAME:
 		{
-			Play(player, currentSceen);
+			Play(player, asteroids, currentSceen);
 			break;
 		}
 		case GameSceen::PAUSE:

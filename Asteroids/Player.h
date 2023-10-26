@@ -33,23 +33,17 @@ static void Load(Player& player)
 
 static void GetInput(Player& player, GameSceen& currentSceen)
 {
-    const float interpolationFactor = 0.002f;
+    const float interpolationFactor = 0.0015f;
 
     player.rotation = (atan2(static_cast<double>(GetMousePosition().y) - player.position.y, static_cast<double>(GetMousePosition().x) - player.position.x)) * RAD2DEG + 90;
-
-    /*  player.targetRotation = (atan2(static_cast<double>(GetMousePosition().y) - player.position.y, static_cast<double>(GetMousePosition().x) - player.position.x)) * RAD2DEG + 90;
-
-    player.rotation = Lerp(player.rotation, player.targetRotation, 0.01f);
-
-    std::cout << player.rotation << std::endl;*/
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
     {
         player.speed += 0.0001;
 
-        if (player.speed >= 0.11f)
+        if (player.speed >= 0.08f)
         {
-            player.speed = 0.11f;
+            player.speed = 0.08f;
         }
 
         Vector2 targetDirection = Vector2Subtract(GetMousePosition(), player.position);
