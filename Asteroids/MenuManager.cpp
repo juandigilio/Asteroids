@@ -3,7 +3,9 @@
 #include "GameData.h"
 #include "Player.h"
 #include "Asteroids.h"
+#include "AsteroidsManager.h"
 #include "GameLoop.h"
+
 
 namespace Assets
 {
@@ -24,6 +26,7 @@ namespace Assets
 
 using namespace Globals;
 using namespace Assets;
+using namespace AsteroidsManager;
 
 void InitMenu()
 {
@@ -139,8 +142,12 @@ void ShowCredits(GameSceen& currentSceen)
 void StartUp()
 {
 	GameSceen currentSceen = GameSceen::MENU;
+
 	Player player;
-	Asteroid asteroids[asteroidsQnty];
+
+	Asteroid* asteroids = new Asteroid[asteroidsQnty];
+	Asteroid* halfAsteroids = new Asteroid[halfAsteroidsQnty];
+	Asteroid* cuarterAsteroids = new Asteroid[quarterAsteroidsQnty];
 
 	srand(time(NULL));
 
@@ -155,35 +162,40 @@ void StartUp()
 
 		switch (currentSceen)
 		{
-		case GameSceen::MENU:
-		{
-			ShowMenu(currentSceen);
-			break;
-		}
-		case GameSceen::GAME:
-		{
-			Play(player, asteroids, currentSceen);
-			break;
-		}
-		case GameSceen::PAUSE:
-		{
-			break;
-		}
-		case GameSceen::INSTRUCTIONS:
-		{
-			ShowInstructions(currentSceen);
-			break;
-		}
-		case GameSceen::CREDITS:
-		{
-			ShowCredits(currentSceen);
-			break;
-		}
-		case GameSceen::EXIT:
-		{
-			CloseWindow();
-			break;
-		}
+			case GameSceen::MENU:
+			{
+				ShowMenu(currentSceen);
+				break;
+			}
+			case GameSceen::GAME:
+			{
+				Play(player, asteroids, halfAsteroids, cuarterAsteroids, currentSceen);
+				break;
+			}
+			case GameSceen::PAUSE:
+			{
+				break;
+			}
+			case GameSceen::INSTRUCTIONS:
+			{
+				ShowInstructions(currentSceen);
+				break;
+			}
+			case GameSceen::CREDITS:
+			{
+				ShowCredits(currentSceen);
+				break;
+			}
+			case GameSceen::EXIT:
+			{
+				delete[] asteroids;
+				delete[] halfAsteroids;
+				delete[] cuarterAsteroids;
+
+				CloseWindow();
+
+				break;
+			}
 		}
 
 		EndDrawing();

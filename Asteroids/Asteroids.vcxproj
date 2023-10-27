@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsteroidsManager.cpp" />
     <ClCompile Include="GameData.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="main.cpp" />
@@ -165,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroids.h" />
+    <ClInclude Include="AsteroidsManager.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="MenuManager.h" />

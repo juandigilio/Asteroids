@@ -37,6 +37,11 @@ struct Player
 	Texture2D texture;
 
     Bullet bullets[maxBulletsQnty];
+
+    Vector2 GetCenter()
+    {
+        return { position.x + (texture.width / 2), position.y + (texture.height / 2) };
+    }
 };
 
 static void Load(Player& player)
