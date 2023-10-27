@@ -10,6 +10,7 @@ struct Asteroid
 	Vector2 velocity{};
 	float speed = 120.0f;
 	float rotation = 0.0f;
+	float radius;
 	bool isAlive = false;
 	
 	Vector2 GetCenter()

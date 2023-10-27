@@ -1,5 +1,7 @@
 #pragma once
 
+#include "raylib.h"
+
 enum class GameSceen
 {
 	MENU,
@@ -14,5 +16,6 @@ namespace Globals
 {
 	extern const int screenWidth;
 	extern const int screenHeight;
+	extern Vector2 screenCenter;
 	extern bool loading;
 }

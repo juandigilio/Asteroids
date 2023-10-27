@@ -18,16 +18,19 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 	for (int i = 0; i < asteroidsQnty; i++)
 	{
 		asteroids[i].texture = LoadTexture("Assets/Images/asteroid.png");
+		asteroids[i].radius = asteroids[i].texture.width / 2;
 	}
 
 	for (int i = 0; i < halfAsteroidsQnty; i++)
 	{
 		halfAsteroids[i].texture = LoadTexture("Assets/Images/halfAsteroid.png");
+		halfAsteroids[i].radius = halfAsteroids[i].texture.width / 2;
 	}
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
 		quarterAsteroids[i].texture = LoadTexture("Assets/Images/cuarterAsteroid.png");
+		quarterAsteroids[i].radius = quarterAsteroids[i].texture.width / 2;
 	}
 }
 
@@ -134,7 +137,7 @@ void Draw(Asteroid* asteroids, int quantity)
 	{
 		if (asteroids[i].isAlive)
 		{
-			DrawTextureV(asteroids[i].texture, asteroids[i].position, RAYWHITE);
+			DrawTextureV(asteroids[i].texture, asteroids[i].GetCenter(), RAYWHITE);
 		}
 	}
 }

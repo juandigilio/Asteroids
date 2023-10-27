@@ -31,8 +31,11 @@ struct Player
     float maxSpeed = 120.0f;
 	float rotation = 0.0f;
     float targetRotation;
+    float radius;
 	int totalPoints = 0;
 	int availableLives = 3;
+    bool isColliding = false;
+    float lastCollide = 0.0f;
     bool isAlive = true;
 	Texture2D texture;
 
@@ -47,8 +50,9 @@ struct Player
 static void Load(Player& player)
 {
     player.texture = LoadTexture("Assets/Images/ship.png");
-    player.position.x = screenWidth / 2;
-    player.position.y = screenHeight / 2;
+    player.position.x = screenCenter.x - player.texture.width / 2;
+    player.position.y = screenCenter.y - player.texture .height / 2;
+    player.radius = player.texture.width / 2;
 
     for (int i = 0; i < maxBulletsQnty; i++)
     {
@@ -64,7 +68,7 @@ static void Shoot(Player& player)
         if (!player.bullets[i].isAlive)
         {
             std::cout << "esta disparando" << std::endl;
-            player.bullets[i].position = player.position;
+            player.bullets[i].position = player.GetCenter();
             player.bullets[i].isAlive = true;
             player.bullets[i].firstCrossing = true;
 
@@ -168,7 +172,7 @@ static void GetInput(Player& player, GameSceen& currentSceen)
 {
     const float interpolationFactor = 0.0014f;
 
-    player.rotation = (atan2(static_cast<double>(GetMousePosition().y) - player.position.y, static_cast<double>(GetMousePosition().x) - player.position.x)) * RAD2DEG + 90;
+    player.rotation = (atan2(static_cast<double>(GetMousePosition().y - static_cast<double>(player.texture.height / 2)) - player.position.y, static_cast<double>(GetMousePosition().x - static_cast<double>(player.texture.width / 2)) - player.position.x)) * RAD2DEG + 90;
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
     {
@@ -221,7 +225,7 @@ static void Update(Player& player)
 
 static void Draw(Player& player)
 {
-    DrawTexturePro(player.texture, { 0, 0, 221, 264 }, { player.position.x, player.position.y, 221, 264 }, { 110, 132 }, player.rotation, WHITE);
+    DrawTexturePro(player.texture, { 0, 0, 221, 264 }, { player.GetCenter().x, player.GetCenter().y, 221, 264 }, { 110, 132 }, player.rotation, WHITE);
 
     for (int i = 0; i < maxBulletsQnty; i++)
     {
