@@ -34,7 +34,7 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 	}
 }
 
-static void Spawn(Asteroid& asteroid, Player player)
+static void SpawnBig(Asteroid& asteroid, Player player)
 {
 	int spawnPoint;
 	int playerSector;
@@ -98,6 +98,16 @@ static void Spawn(Asteroid& asteroid, Player player)
 	asteroid.isAlive = true;
 }
 
+static void SpawnHalfs(Asteroid& asteroid, Asteroid* halfAsteroids)
+{
+	int counter = 0;
+
+	for (int i = 0; i < asteroidsQnty; i++)
+	{
+
+	}
+}
+
 static void Move(Asteroid* asteroids, int quantity)
 {
 	for (int i = 0; i < quantity; i++)
@@ -152,7 +162,7 @@ void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAster
 		{
 			if (!asteroids[i].isAlive)
 			{
-				Spawn(asteroids[i], player);
+				SpawnBig(asteroids[i], player);
 				activeAsteroids++;
 				asteroids[i].isAlive = true;
 				lastDrop = GetTime();

@@ -16,10 +16,16 @@ struct Bullet
     Vector2 position{};
     Vector2 velocity{};
     Vector2 direction{};
+    float radius{};
     float speed = 280.0f;
     bool firstCrossing = true;
     bool isAlive = false;
     Texture2D texture;
+
+    Vector2 GetCenter()
+    {
+        return { position.x + (texture.width / 2), position.y + (texture.height / 2) };
+    }
 };
 
 struct Player
@@ -58,6 +64,7 @@ static void Load(Player& player)
     {
         player.bullets[i].texture = LoadTexture("Assets/Images/bullet.png");
         player.bullets[i].isAlive = false;
+        player.bullets[i].radius = player.bullets[i].texture.width / 2;
     }
 }
 
@@ -125,6 +132,7 @@ static void MoveBullets(Bullet& bullet)
         else
         {
             bullet.isAlive = false;
+            bullet.firstCrossing = true;
         }
     }
     else if (bullet.position.x < 0.0f - bullet.texture.width / 2)
