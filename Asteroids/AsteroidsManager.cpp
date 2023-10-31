@@ -19,18 +19,21 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 	{
 		asteroids[i].texture = LoadTexture("Assets/Images/bigAsteroid.png");
 		asteroids[i].radius = asteroids[i].texture.width / 2;
+		asteroids[i].mass = 1.0f;
 	}
 
 	for (int i = 0; i < halfAsteroidsQnty; i++)
 	{
 		halfAsteroids[i].texture = LoadTexture("Assets/Images/halfAsteroid.png");
 		halfAsteroids[i].radius = halfAsteroids[i].texture.width / 2;
+		halfAsteroids[i].mass = 0.75f;
 	}
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
 		quarterAsteroids[i].texture = LoadTexture("Assets/Images/quarterAsteroid.png");
 		quarterAsteroids[i].radius = quarterAsteroids[i].texture.width / 2;
+		quarterAsteroids[i].mass = 0.5f;
 	}
 }
 
@@ -113,6 +116,8 @@ void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& ac
 		else if (!toSpawn[i].isAlive && counter == 0)
 		{
 			toSpawn[i].isAlive = true;
+			toSpawn[i].isSpawning = true;
+			toSpawn[i].lastSpawn = GetTime();
 			toSpawn[i].position = brocken.position;
 			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, -90.0f);
@@ -122,6 +127,8 @@ void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& ac
 		else if (!toSpawn[i].isAlive && counter == 1)
 		{
 			toSpawn[i].isAlive = true;
+			toSpawn[i].isSpawning = true;
+			toSpawn[i].lastSpawn = GetTime();
 			toSpawn[i].position = brocken.position;
 			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, 90.0f);

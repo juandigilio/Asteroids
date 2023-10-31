@@ -8,20 +8,6 @@ using namespace AsteroidsManager;
 
 static Texture2D gamePlayBacground{};
 
-bool CheckCollision(float radius1, float radius2, Vector2 position1, Vector2 position2)
-{
-	float actualDistance = Vector2Distance(position1, position2);
-	float minDistance = radius1 + radius2;
-
-	if (actualDistance <= minDistance)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 static void PlayerCollides(Player& player, GameSceen& gamseSceen)
 {
@@ -43,27 +29,117 @@ static void PlayerCollides(Player& player, GameSceen& gamseSceen)
 	}
 }
 
-void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
+static void KillAsteroid(Asteroid& asteroid, Bullet& bullet, int& actives)
 {
-	for (int i = 0; i < asteroidsQnty; i++)
+	asteroid.isAlive = false;
+	actives--;
+	bullet.isAlive = false;
+}
+
+static bool CheckCircleCircleCollision(float radius1, float radius2, Vector2 position1, Vector2 position2)
+{
+	float actualDistance = Vector2Distance(position1, position2);
+	float minDistance = radius1 + radius2;
+
+	if (actualDistance <= minDistance)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+static void CheckAsteroidsVsEntities(Player& player, Asteroid* asteroids, Asteroid* toSpawn, int& astQnty, int& actAsteroids, int& activesToSpawn, int& maxToSpawn, GameSceen& currentSceen, bool isQuarter)
+{
+	for (int i = 0; i < astQnty; i++)
 	{
 		if (asteroids[i].isAlive)
 		{
-			if (CheckCollision(player.radius, asteroids[i].radius, player.GetCenter(), asteroids[i].GetCenter()))
+			if (CheckCircleCircleCollision(player.radius, asteroids[i].radius, player.GetCenter(), asteroids[i].GetCenter()))
 			{
-				PlayerCollides(player, gamseSceen);
-				//std::cout << "player crash big" << std::endl;
+				PlayerCollides(player, currentSceen);
 			}
 			else
 			{
 				for (int j = 0; j < maxBulletsQnty; j++)
 				{
-					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, asteroids[i].radius, player.bullets[j].GetCenter(), asteroids[i].GetCenter()))
+					if (player.bullets[j].isAlive)
 					{
-						asteroids[i].isAlive = false;
-						activeAsteroids--;
-						player.bullets[j].isAlive = false;
-						SpawnChildrens(player.bullets[j], asteroids[i], halfAsteroids, activeHalfs, halfAsteroidsQnty);
+						if (CheckCircleCircleCollision(player.bullets[j].radius, asteroids[i].radius, player.bullets[j].GetCenter(), asteroids[i].GetCenter()))
+						{
+							KillAsteroid(asteroids[i], player.bullets[j], actAsteroids);
+
+							if (!isQuarter)
+							{
+								SpawnChildrens(player.bullets[j], asteroids[i], toSpawn, activesToSpawn, maxToSpawn);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+static void AsteroidsRebound(Asteroid& asteroid1, Asteroid& asteroid2)
+{
+	Vector2 collisionVector = Vector2Subtract(asteroid1.position, asteroid2.position);
+
+	// Calcula el ángulo de colisión
+	float collisionAngle = atan2(collisionVector.y, collisionVector.x);
+
+	// Aplica un rebote con el ángulo opuesto (180 grados)
+	asteroid1.direction = Vector2Rotate(asteroid1.direction, (180.0f - collisionAngle) * RAD2DEG);
+	asteroid2.direction = Vector2Rotate(asteroid2.direction, (180.0f - collisionAngle) * RAD2DEG);
+
+	// Ajusta las posiciones para evitar la superposición
+	float collisionDistance = Vector2Length(collisionVector);
+	float overlap = (asteroid1.radius * 2) - collisionDistance;
+	collisionVector = Vector2Divide(collisionVector, { collisionDistance, collisionDistance });
+	asteroid1.position = Vector2Add(asteroid1.position, Vector2Scale(collisionVector, -overlap * 0.5f));
+	asteroid2.position = Vector2Add(asteroid2.position, Vector2Scale(collisionVector, overlap * 0.5f));
+}
+
+static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+{
+	for (int i = 0; i < asteroidsQnty; i++)
+	{
+		if (asteroids[i].isAlive)
+		{
+			for (int j = 0; j < asteroidsQnty; j++)
+			{
+				if (asteroids[j].isAlive && i != j)
+				{
+					if (CheckCircleCircleCollision(asteroids[i].radius, asteroids[j].radius, asteroids[i].position, asteroids[j].position))
+					{
+						AsteroidsRebound(asteroids[i], asteroids[j]);
+						break;
+					}
+				}
+			}
+
+			for (int j = 0; j < halfAsteroidsQnty; j++)
+			{
+				if (halfAsteroids[j].isAlive)
+				{
+					if (CheckCircleCircleCollision(asteroids[i].radius, halfAsteroids[j].radius, asteroids[i].position, halfAsteroids[j].position))
+					{
+						AsteroidsRebound(asteroids[i], halfAsteroids[j]);
+						break;
+					}					
+				}
+			}
+
+			for (int j = 0; j < quarterAsteroidsQnty; j++)
+			{
+				if (quarterAsteroids[j].isAlive)
+				{
+					if (CheckCircleCircleCollision(asteroids[i].radius, quarterAsteroids[j].radius, asteroids[i].position, quarterAsteroids[j].position))
+					{
+						AsteroidsRebound(asteroids[i], quarterAsteroids[j]);
+						break;
 					}
 				}
 			}
@@ -74,21 +150,26 @@ void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 	{
 		if (halfAsteroids[i].isAlive)
 		{
-			if (CheckCollision(player.radius, halfAsteroids[i].radius, player.GetCenter(), halfAsteroids[i].GetCenter()))
+			for (int j = 0; j < halfAsteroidsQnty; j++)
 			{
-				PlayerCollides(player, gamseSceen);
-				//std::cout << "player crash half" << std::endl;
-			}
-			else
-			{
-				for (int j = 0; j < maxBulletsQnty; j++)
+				if (halfAsteroids[j].isAlive && i != j)
 				{
-					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, halfAsteroids[i].radius, player.bullets[j].GetCenter(), halfAsteroids[i].GetCenter()))
+					if (CheckCircleCircleCollision(halfAsteroids[i].radius, halfAsteroids[j].radius, halfAsteroids[i].position, halfAsteroids[j].position))
 					{
-						halfAsteroids[i].isAlive = false;
-						activeHalfs--;
-						player.bullets[j].isAlive = false;
-						SpawnChildrens(player.bullets[j], halfAsteroids[i], quarterAsteroids, activeQuarters, quarterAsteroidsQnty);
+						AsteroidsRebound(halfAsteroids[i], halfAsteroids[j]);
+						break;
+					}
+				}
+			}
+
+			for (int j = 0; j < quarterAsteroidsQnty; j++)
+			{
+				if (quarterAsteroids[j].isAlive)
+				{
+					if (CheckCircleCircleCollision(halfAsteroids[i].radius, quarterAsteroids[j].radius, halfAsteroids[i].position, quarterAsteroids[j].position))
+					{
+						AsteroidsRebound(halfAsteroids[i], quarterAsteroids[j]);
+						break;
 					}
 				}
 			}
@@ -99,25 +180,30 @@ void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 	{
 		if (quarterAsteroids[i].isAlive)
 		{
-			if (CheckCollision(player.radius, quarterAsteroids[i].radius, player.GetCenter(), quarterAsteroids[i].GetCenter()))
+			for (int j = 0; j < quarterAsteroidsQnty; j++)
 			{
-				PlayerCollides(player, gamseSceen);
-				//std::cout << "player crash quarter" << std::endl;
-			}
-			else
-			{
-				for (int j = 0; j < maxBulletsQnty; j++)
+				if (quarterAsteroids[j].isAlive && i != j)
 				{
-					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, quarterAsteroids[i].radius, player.bullets[j].GetCenter(), quarterAsteroids[i].GetCenter()))
+					if (CheckCircleCircleCollision(quarterAsteroids[i].radius, quarterAsteroids[j].radius, quarterAsteroids[i].position, quarterAsteroids[j].position))
 					{
-						quarterAsteroids[i].isAlive = false;
-						activeQuarters--;
-						player.bullets[j].isAlive = false;
+						AsteroidsRebound(quarterAsteroids[i], quarterAsteroids[j]);
+						break;
 					}
 				}
 			}
 		}
 	}
+}
+
+static void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
+{
+	CheckAsteroidsVsEntities(player, asteroids, halfAsteroids, asteroidsQnty, activeAsteroids, activeHalfs, halfAsteroidsQnty, gamseSceen, false);
+
+	CheckAsteroidsVsEntities(player, halfAsteroids, quarterAsteroids, halfAsteroidsQnty, activeHalfs, activeQuarters, quarterAsteroidsQnty, gamseSceen, false);
+
+	CheckAsteroidsVsEntities(player, quarterAsteroids, quarterAsteroids, quarterAsteroidsQnty, activeQuarters, quarterAsteroidsQnty, quarterAsteroidsQnty, gamseSceen, true);
+
+	//CheckAsteroidsVsAsteroids(asteroids, halfAsteroids, quarterAsteroids);
 }
 
 static void UpdateAll(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
@@ -161,7 +247,7 @@ static void RestartAllEntities(Player& player, Asteroid* asteroids, Asteroid* ha
 	activeQuarters = 0;
 }
 
-void ShowCrash(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+static void ShowCrash(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	player.rotation += 0.6f;
 
@@ -187,7 +273,7 @@ static void Draw(Player player, Asteroid* asteroids, Asteroid* halfAsteroids, As
 	Draw(quarterAsteroids, quarterAsteroidsQnty);
 }
 
-void GameLoop(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
+static void GameLoop(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
 {
 	if (!player.isColliding)
 	{

@@ -200,7 +200,7 @@ static void GetInput(Player& player, GameSceen& currentSceen)
 
         targetDirection = Vector2Divide(targetDirection, { targetLength, targetLength });
 
-        player.direction = Vector2Lerp(player.direction, targetDirection, interpolationFactor);
+        player.direction = Vector2Lerp(player.direction, targetDirection, interpolationFactor * GetFrameTime());
 
         float length = Vector2Length(player.direction);
 
@@ -212,7 +212,7 @@ static void GetInput(Player& player, GameSceen& currentSceen)
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        std::cout << "disparo" << std::endl;
+        //std::cout << "disparo" << std::endl;
         Shoot(player);
     }
 
