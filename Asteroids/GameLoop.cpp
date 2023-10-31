@@ -4,144 +4,100 @@
 
 #include "raymath.h"
 
-void CheckCollisionPlayerAsteroid(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+using namespace AsteroidsManager;
+
+bool CheckCollision(float radius1, float radius2, Vector2 position1, Vector2 position2)
 {
-	float actualDistance;
-	float minDistance = player.radius + asteroids[0].radius;
-	
+	float actualDistance = Vector2Distance(position1, position2);
+	float minDistance = radius1 + radius2;
+
+	if (actualDistance <= minDistance)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+{
 	for (int i = 0; i < asteroidsQnty; i++)
 	{
 		if (asteroids[i].isAlive)
 		{
-			actualDistance = Vector2Distance(player.GetCenter(), asteroids[i].GetCenter());
-
-			if (actualDistance <= minDistance)
+			if (CheckCollision(player.radius, asteroids[i].radius, player.GetCenter(), asteroids[i].GetCenter()))
 			{
 				player.isColliding = true;
 				player.lastCollide = GetTime();
-				std::cout << "Chocan" << std::endl;
-				break;
+				std::cout << "player crash big" << std::endl;
 			}
-		}		
+			else
+			{
+				for (int j = 0; j < maxBulletsQnty; j++)
+				{
+					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, asteroids[i].radius, player.bullets[j].GetCenter(), asteroids[i].GetCenter()))
+					{
+						asteroids[i].isAlive = false;
+						activeAsteroids--;
+						player.bullets[j].isAlive = false;
+						SpawnChildrens(asteroids[i], halfAsteroids, activeHalfs, halfAsteroidsQnty);
+					}
+				}
+			}
+		}
 	}
-
-	minDistance = player.radius + halfAsteroids[0].radius;
 
 	for (int i = 0; i < halfAsteroidsQnty; i++)
 	{
 		if (halfAsteroids[i].isAlive)
 		{
-			actualDistance = Vector2Distance(player.GetCenter(), halfAsteroids[i].GetCenter());
-
-			if (actualDistance <= minDistance)
+			if (CheckCollision(player.radius, halfAsteroids[i].radius, player.GetCenter(), halfAsteroids[i].GetCenter()))
 			{
 				player.isColliding = true;
 				player.lastCollide = GetTime();
-				std::cout << "Chocan" << std::endl;
-				break;
+				std::cout << "player crash half" << std::endl;
+			}
+			else
+			{
+				for (int j = 0; j < maxBulletsQnty; j++)
+				{
+					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, halfAsteroids[i].radius, player.bullets[j].GetCenter(), halfAsteroids[i].GetCenter()))
+					{
+						halfAsteroids[i].isAlive = false;
+						activeHalfs--;
+						player.bullets[j].isAlive = false;
+						SpawnChildrens(halfAsteroids[i], quarterAsteroids, activeQuarters, quarterAsteroidsQnty);
+					}
+				}
 			}
 		}
 	}
-
-	minDistance = player.radius + quarterAsteroids[0].radius;
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
 		if (quarterAsteroids[i].isAlive)
 		{
-			actualDistance = Vector2Distance(player.GetCenter(), quarterAsteroids[i].GetCenter());
-
-			if (actualDistance <= minDistance)
+			if (CheckCollision(player.radius, quarterAsteroids[i].radius, player.GetCenter(), quarterAsteroids[i].GetCenter()))
 			{
 				player.isColliding = true;
 				player.lastCollide = GetTime();
-				std::cout << "Chocan" << std::endl;
-				break;
+				std::cout << "player crash quarter" << std::endl;
 			}
-		}
-	}
-}
-
-void CheckCollisionAsteroidBullet(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
-{
-	float actualDistance;
-	float minDistance = player.bullets[0].radius + asteroids[0].radius;
-
-	for (int i = 0; i < maxBulletsQnty; i++)
-	{
-		if (player.bullets[i].isAlive)
-		{
-			for (int i = 0; i < asteroidsQnty; i++)
+			else
 			{
-				if (asteroids[i].isAlive)
+				for (int j = 0; j < maxBulletsQnty; j++)
 				{
-					actualDistance = Vector2Distance(player.bullets[i].GetCenter(), asteroids[i].GetCenter());
-
-					if (actualDistance <= minDistance)
+					if (player.bullets[j].isAlive && CheckCollision(player.bullets[j].radius, quarterAsteroids[i].radius, player.bullets[j].GetCenter(), quarterAsteroids[i].GetCenter()))
 					{
-						player.bullets[i].isAlive = false;
-						asteroids[i].isAlive = false;
-						activeAsteroids--;
-						std::cout << "disparo acertado" << std::endl;
-						break;
-					}
-				}
-			}
-		}
-
-		if (player.bullets[i].isAlive)
-		{
-			for (int i = 0; i < halfAsteroidsQnty; i++)
-			{
-				if (halfAsteroids[i].isAlive)
-				{
-					actualDistance = Vector2Distance(player.bullets[i].GetCenter(), halfAsteroids[i].GetCenter());
-
-					if (actualDistance <= minDistance)
-					{
-						player.bullets[i].isAlive = false;
-						halfAsteroids[i].isAlive = false;
-						activeHalfs--;
-						std::cout << "disparo acertado" << std::endl;
-						break;
-					}
-				}
-			}
-		}
-
-		if (player.bullets[i].isAlive)
-		{
-			for (int i = 0; i < quarterAsteroidsQnty; i++)
-			{
-				if (quarterAsteroids[i].isAlive)
-				{
-					actualDistance = Vector2Distance(player.bullets[i].GetCenter(), quarterAsteroids[i].GetCenter());
-
-					if (actualDistance <= minDistance)
-					{
-						player.bullets[i].isAlive = false;
 						quarterAsteroids[i].isAlive = false;
-						activeCuarters--;
-						std::cout << "disparo acertado" << std::endl;
-						break;
+						activeQuarters--;
+						player.bullets[j].isAlive = false;
 					}
 				}
 			}
 		}
-		
-	}
-	
-}
-
-void CheckCollisions(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
-{
-	if (CheckCollisionPlayerAsteroid(player, asteroids, halfAsteroids, quarterAsteroids))
-	{
-		
-	}
-	else if ()
-	{
-
 	}
 }
 
@@ -150,21 +106,20 @@ static void UpdateAll(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 	Update(asteroids, halfAsteroids, quarterAsteroids, player);
 	Update(player);
 
-	CheckCollisions(player, asteroids, halfAsteroids, quarterAsteroids);
+	UpdateCollisions(player, asteroids, halfAsteroids, quarterAsteroids);
 }
 
 static void RestartAllEntities(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	player.position.x = screenCenter.x - (player.texture.width / 2);
 	player.position.y = screenCenter.y - (player.texture.height / 2);
+	player.velocity = { 0, 0 };
+	player.speed = 0;
 
 	for (int i = 0; i < maxBulletsQnty; i++)
 	{
-		if (player.bullets[i].isAlive)
-		{
-			player.bullets[i].isAlive = false;
-			player.bullets[i].firstCrossing = true;
-		}
+		player.bullets[i].isAlive = false;
+		player.bullets[i].firstCrossing = true;
 	}
 
 	for (int i = 0; i < asteroidsQnty; i++)
@@ -184,7 +139,7 @@ static void RestartAllEntities(Player& player, Asteroid* asteroids, Asteroid* ha
 
 	activeAsteroids = 0;
 	activeHalfs = 0;
-	activeCuarters = 0;
+	activeQuarters = 0;
 }
 
 void ShowCrash(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)

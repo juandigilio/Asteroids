@@ -17,7 +17,7 @@ struct Bullet
     Vector2 velocity{};
     Vector2 direction{};
     float radius{};
-    float speed = 280.0f;
+    float speed = 360.0f;
     bool firstCrossing = true;
     bool isAlive = false;
     Texture2D texture;
@@ -239,8 +239,6 @@ static void Draw(Player& player)
     {
         if (player.bullets[i].isAlive)
         {
-            std::cout << "esta viva" << i << std::endl;
-
             DrawTextureV(player.bullets[i].texture, player.bullets[i].position, RAYWHITE);
         }
     }

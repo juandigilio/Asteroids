@@ -3,12 +3,12 @@
 
 namespace AsteroidsManager
 {
-	extern int asteroidsQnty = 10;
+	extern int asteroidsQnty = 1;
 	extern int halfAsteroidsQnty = asteroidsQnty * 2;
 	extern int quarterAsteroidsQnty = halfAsteroidsQnty * 2;
 	extern int activeAsteroids = 0;
 	extern int activeHalfs = 0;
-	extern int activeCuarters = 0;
+	extern int activeQuarters = 0;
 	extern float lastDrop = 0.0f;
 }
 
@@ -94,17 +94,40 @@ static void SpawnBig(Asteroid& asteroid, Player player)
 	asteroid.direction = Vector2Subtract(player.position, asteroid.position);
 	float length = Vector2Length(asteroid.direction);
 	asteroid.direction = Vector2Divide(asteroid.direction, { length, length });
-
+	
 	asteroid.isAlive = true;
+	activeAsteroids++;
+	lastDrop = GetTime();
 }
 
-static void SpawnHalfs(Asteroid& asteroid, Asteroid* halfAsteroids)
+void SpawnChildrens(Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty)
 {
 	int counter = 0;
 
-	for (int i = 0; i < asteroidsQnty; i++)
+	for (int i = 0; i < maxQnty; i++)
 	{
-
+		if (counter == 2 || actives == maxQnty)
+		{
+			break;
+		}
+		else if (!toSpawn[i].isAlive && counter == 0)
+		{
+			toSpawn[i].isAlive = true;
+			toSpawn[i].position = brocken.position;
+			toSpawn[i].direction = brocken.direction;
+			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, -90.0f);
+			actives++;
+			counter++;
+		}
+		else if (!toSpawn[i].isAlive && counter == 1)
+		{
+			toSpawn[i].isAlive = true;
+			toSpawn[i].position = brocken.position;
+			toSpawn[i].direction = brocken.direction;
+			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, 90.0f);
+			actives++;
+			counter++;
+		}
 	}
 }
 
@@ -147,7 +170,7 @@ void Draw(Asteroid* asteroids, int quantity)
 	{
 		if (asteroids[i].isAlive)
 		{
-			DrawTextureV(asteroids[i].texture, asteroids[i].GetCenter(), RAYWHITE);
+			DrawTextureV(asteroids[i].texture, asteroids[i].position, RAYWHITE);
 		}
 	}
 }
@@ -163,9 +186,6 @@ void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAster
 			if (!asteroids[i].isAlive)
 			{
 				SpawnBig(asteroids[i], player);
-				activeAsteroids++;
-				asteroids[i].isAlive = true;
-				lastDrop = GetTime();
 				std::cout << "Active instances: " << activeAsteroids << std::endl;
 				break;
 			}

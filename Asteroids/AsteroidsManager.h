@@ -15,7 +15,7 @@ namespace AsteroidsManager
 	extern int quarterAsteroidsQnty;
 	extern int activeAsteroids;
 	extern int activeHalfs;
-	extern int activeCuarters;
+	extern int activeQuarters;
 	extern float lastDrop;
 }
 
@@ -25,3 +25,4 @@ using namespace AsteroidsManager;
 void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids);
 void Draw(Asteroid* asteroids, int quantity);
 void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player);
+void SpawnChildrens(Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty);
