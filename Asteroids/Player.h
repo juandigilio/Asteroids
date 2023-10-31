@@ -16,11 +16,13 @@ struct Bullet
     Vector2 position{};
     Vector2 velocity{};
     Vector2 direction{};
+    float rotation{};
     float radius{};
     float speed = 360.0f;
     bool firstCrossing = true;
     bool isAlive = false;
-    Texture2D texture;
+    Texture2D texture{};
+    Rectangle source{};
 
     Vector2 GetCenter()
     {
@@ -30,22 +32,23 @@ struct Bullet
 
 struct Player
 {
-	Vector2 position;
-	Vector2 velocity;
-	Vector2 direction;
+    Vector2 position{};
+	Vector2 velocity{};
+	Vector2 direction{};
 	float speed = 0.0f;
     float maxSpeed = 120.0f;
 	float rotation = 0.0f;
-    float targetRotation;
-    float radius;
+    float targetRotation{};
+    float radius{};
 	int totalPoints = 0;
 	int availableLives = 3;
     bool isColliding = false;
     float lastCollide = 0.0f;
     bool isAlive = true;
-	Texture2D texture;
+	Texture2D texture{};
+    Rectangle source{};
 
-    Bullet bullets[maxBulletsQnty];
+    Bullet bullets[maxBulletsQnty]{};
 
     Vector2 GetCenter()
     {
@@ -59,12 +62,14 @@ static void Load(Player& player)
     player.position.x = screenCenter.x - player.texture.width / 2;
     player.position.y = screenCenter.y - player.texture .height / 2;
     player.radius = player.texture.width / 2;
+    player.source = { 0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height) };
 
     for (int i = 0; i < maxBulletsQnty; i++)
     {
         player.bullets[i].texture = LoadTexture("Assets/Images/bullet.png");
         player.bullets[i].isAlive = false;
         player.bullets[i].radius = player.bullets[i].texture.width / 2;
+        player.bullets[i].source = { 0, 0, static_cast<float>(player.bullets[i].texture.width), static_cast<float>(player.bullets[i].texture.height) };
     }
 }
 
@@ -74,8 +79,9 @@ static void Shoot(Player& player)
     {
         if (!player.bullets[i].isAlive)
         {
-            std::cout << "esta disparando" << std::endl;
+            //std::cout << "esta disparando" << std::endl;
             player.bullets[i].position = player.GetCenter();
+            player.bullets[i].rotation = player.rotation;
             player.bullets[i].isAlive = true;
             player.bullets[i].firstCrossing = true;
 
@@ -178,8 +184,6 @@ static void MoveBullets(Bullet& bullet)
 
 static void GetInput(Player& player, GameSceen& currentSceen)
 {
-    const float interpolationFactor = 0.0014f;
-
     player.rotation = (atan2(static_cast<double>(GetMousePosition().y - static_cast<double>(player.texture.height / 2)) - player.position.y, static_cast<double>(GetMousePosition().x - static_cast<double>(player.texture.width / 2)) - player.position.x)) * RAD2DEG + 90;
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
@@ -233,13 +237,22 @@ static void Update(Player& player)
 
 static void Draw(Player& player)
 {
-    DrawTexturePro(player.texture, { 0, 0, 221, 264 }, { player.GetCenter().x, player.GetCenter().y, 221, 264 }, { 110, 132 }, player.rotation, WHITE);
+    Rectangle dest = { player.GetCenter().x, player.GetCenter().y, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height) };
+    Vector2 origin = { static_cast<float>(player.texture.width / 2), static_cast<float>(player.texture.height / 2) };
+
+    DrawTexturePro(player.texture, player.source, dest, origin, player.rotation + 90.0f, RAYWHITE);
+
+    
 
     for (int i = 0; i < maxBulletsQnty; i++)
     {
         if (player.bullets[i].isAlive)
         {
-            DrawTextureV(player.bullets[i].texture, player.bullets[i].position, RAYWHITE);
+            dest = { player.bullets[i].GetCenter().x, player.bullets[i].GetCenter().y, static_cast<float>(player.bullets[i].texture.width), static_cast<float>(player.bullets[i].texture.height) };
+            origin = { static_cast<float>(player.bullets[i].texture.width / 2), static_cast<float>(player.bullets[i].texture.height / 2) };
+
+            //DrawTextureV(player.bullets[i].texture, player.bullets[i].position, RAYWHITE);
+            DrawTexturePro(player.bullets[i].texture, player.bullets[i].source, dest, origin, player.bullets[i].rotation - 90, RAYWHITE);
         }
     }
 }

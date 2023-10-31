@@ -10,6 +10,8 @@ namespace Assets
 	extern Texture2D credits;
 	extern Texture2D exit;
 
+	extern Font font;
+
 	extern int menuSizeX;
 	extern int menuSizeY;
 

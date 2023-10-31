@@ -3,9 +3,9 @@
 
 namespace AsteroidsManager
 {
-	extern int asteroidsQnty = 1;
-	extern int halfAsteroidsQnty = asteroidsQnty * 2;
-	extern int quarterAsteroidsQnty = halfAsteroidsQnty * 2;
+	extern int asteroidsQnty = 5;
+	extern int halfAsteroidsQnty = asteroidsQnty * 3;
+	extern int quarterAsteroidsQnty = halfAsteroidsQnty * 3;
 	extern int activeAsteroids = 0;
 	extern int activeHalfs = 0;
 	extern int activeQuarters = 0;
@@ -17,7 +17,7 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 {
 	for (int i = 0; i < asteroidsQnty; i++)
 	{
-		asteroids[i].texture = LoadTexture("Assets/Images/asteroid.png");
+		asteroids[i].texture = LoadTexture("Assets/Images/bigAsteroid.png");
 		asteroids[i].radius = asteroids[i].texture.width / 2;
 	}
 
@@ -29,7 +29,7 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
-		quarterAsteroids[i].texture = LoadTexture("Assets/Images/cuarterAsteroid.png");
+		quarterAsteroids[i].texture = LoadTexture("Assets/Images/quarterAsteroid.png");
 		quarterAsteroids[i].radius = quarterAsteroids[i].texture.width / 2;
 	}
 }
@@ -100,7 +100,7 @@ static void SpawnBig(Asteroid& asteroid, Player player)
 	lastDrop = GetTime();
 }
 
-void SpawnChildrens(Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty)
+void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty)
 {
 	int counter = 0;
 
@@ -114,7 +114,7 @@ void SpawnChildrens(Asteroid& brocken, Asteroid* toSpawn, int& actives, int& max
 		{
 			toSpawn[i].isAlive = true;
 			toSpawn[i].position = brocken.position;
-			toSpawn[i].direction = brocken.direction;
+			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, -90.0f);
 			actives++;
 			counter++;
@@ -123,7 +123,7 @@ void SpawnChildrens(Asteroid& brocken, Asteroid* toSpawn, int& actives, int& max
 		{
 			toSpawn[i].isAlive = true;
 			toSpawn[i].position = brocken.position;
-			toSpawn[i].direction = brocken.direction;
+			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, 90.0f);
 			actives++;
 			counter++;

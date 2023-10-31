@@ -6,6 +6,7 @@ enum class GameSceen
 {
 	MENU,
 	GAME,
+	RESULTS,
 	PAUSE,
 	INSTRUCTIONS,
 	CREDITS,
@@ -18,4 +19,5 @@ namespace Globals
 	extern const int screenHeight;
 	extern Vector2 screenCenter;
 	extern bool loading;
+	extern float interpolationFactor;
 }

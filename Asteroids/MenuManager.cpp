@@ -15,6 +15,8 @@ namespace Assets
 	extern Texture2D credits{};
 	extern Texture2D exit{};
 
+	extern Font font{};
+
 	extern int menuSizeX = 200;
 	extern int menuSizeY = 100;
 
@@ -36,6 +38,9 @@ void InitMenu()
 	credits = LoadTexture("Assets/Images/Menu/big.png");
 	Assets::exit = LoadTexture("Assets/Images/Menu/stone.png");
 
+	font = LoadFont("resources/fonts/romulus.png");
+
+
 	playPos.x = (screenWidth / 2) - (menuSizeX / 2);
 	playPos.y = ((screenHeight / 5)) - (menuSizeY / 2);
 	instructionsPos.x = (screenWidth / 2) - (menuSizeX / 2);
@@ -44,15 +49,6 @@ void InitMenu()
 	creditsPos.y = ((screenHeight / 5) * 3) - (menuSizeY / 2);
 	exitPos.x = (screenWidth / 2) - (menuSizeX / 2);
 	exitPos.y = (screenHeight / 5) * 4 - (menuSizeY / 2);
-}
-
-static void Draw()
-{
-	DrawTexture(background, 0, 0, WHITE);
-	DrawTextureEx(play, playPos, 0, 1.0, WHITE);
-	DrawTextureEx(instructions, instructionsPos, 0, 1.0, WHITE);
-	DrawTextureEx(credits, creditsPos, 0, 1.0, WHITE);
-	DrawTextureEx(Assets::exit, exitPos, 0, 1.0, WHITE);
 }
 
 static void GetInput(GameSceen& currentSceen)
@@ -94,15 +90,21 @@ static void GetInput(GameSceen& currentSceen)
 
 void ShowMenu(GameSceen& currentSceen)
 {
-	Draw();
+	DrawTexture(background, 0, 0, WHITE);
+	DrawTextureEx(play, playPos, 0, 1.0, WHITE);
+	DrawTextureEx(instructions, instructionsPos, 0, 1.0, WHITE);
+	DrawTextureEx(credits, creditsPos, 0, 1.0, WHITE);
+	DrawTextureEx(Assets::exit, exitPos, 0, 1.0, WHITE);
 
 	GetInput(currentSceen);
 }
 
 void ShowInstructions(GameSceen& currentSceen)
 {
-	/*slSprite(menuBackground, screenWidth / 2, screenHeight / 2, screenWidth * 1.2, screenHeight);
+	int spacing = 3;
 
+	DrawTexture(background, 0, 0, WHITE);
+	/*
 	slSetForeColor(0.471f, 0.471f, 0.471f, 1.0f);
 
 	slSetFont(menuFont, 40);
@@ -155,7 +157,7 @@ void StartUp()
 
 	InitMenu();
 
-	while (player.isAlive && currentSceen != GameSceen::EXIT)
+	while (currentSceen != GameSceen::EXIT)
 	{
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
@@ -170,6 +172,11 @@ void StartUp()
 			case GameSceen::GAME:
 			{
 				Play(player, asteroids, halfAsteroids, cuarterAsteroids, currentSceen);
+				break;
+			}
+			case GameSceen::RESULTS:
+			{
+				
 				break;
 			}
 			case GameSceen::PAUSE:

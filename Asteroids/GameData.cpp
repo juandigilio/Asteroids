@@ -7,6 +7,7 @@ namespace Globals
 	extern const int screenHeight = 768;
 	extern Vector2 screenCenter = { screenWidth / 2, screenHeight / 2};
 	extern bool loading = true;
+	extern float interpolationFactor = 0.0005f;
 }
 
 
