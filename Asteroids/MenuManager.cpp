@@ -11,6 +11,7 @@ namespace Assets
 {
 	extern Texture2D background{};
 	extern Texture2D play{};
+	extern Texture2D playSelect{};
 	extern Texture2D instructions{};
 	extern Texture2D credits{};
 	extern Texture2D exit{};
@@ -33,7 +34,8 @@ using namespace AsteroidsManager;
 void InitMenu()
 {
 	background = LoadTexture("Assets/Images/Menu/background.png");
-	play = LoadTexture("Assets/Images/Menu/acid.png");
+	play = LoadTexture("Assets/Images/Menu/play.png");
+	playSelect = LoadTexture("Assets/Images/Menu/playSelect.png");
 	instructions = LoadTexture("Assets/Images/Menu/ice.png");
 	credits = LoadTexture("Assets/Images/Menu/big.png");
 	Assets::exit = LoadTexture("Assets/Images/Menu/stone.png");
