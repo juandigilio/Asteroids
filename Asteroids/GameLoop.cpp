@@ -12,7 +12,7 @@ static Texture2D gamePlayBacground{};
 static void PlayerCollides(Player& player, GameSceen& gamseSceen)
 {
 	player.isColliding = true;
-	player.lastCollide = GetTime();
+	player.lastCollide = static_cast<float>(GetTime());
 	player.availableLives--;
 
 	if (player.availableLives == 2)
@@ -87,15 +87,15 @@ static void AsteroidsRebound(Asteroid& asteroid1, Asteroid& asteroid2)
 {
 	Vector2 collisionVector = Vector2Subtract(asteroid1.position, asteroid2.position);
 
-	float collisionAngle = atan2(collisionVector.y, collisionVector.x);
+	float collisionAngle = static_cast<float>(atan2(collisionVector.y, collisionVector.x));
 
 	asteroid1.direction = Vector2Rotate(asteroid1.direction, (180.0f - collisionAngle) * RAD2DEG);
 	asteroid2.direction = Vector2Rotate(asteroid2.direction, (180.0f - collisionAngle) * RAD2DEG);
 
 	asteroid1.isColliding = true;
-	asteroid1.lastCollide = GetTime();
+	asteroid1.lastCollide = static_cast<float>(GetTime());
 	asteroid2.isColliding = true;
-	asteroid2.lastCollide = GetTime();
+	asteroid2.lastCollide = static_cast<float>(GetTime());
 }
 
 static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
@@ -204,8 +204,8 @@ static void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* half
 
 static void UpdateAll(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
 {
-	Update(asteroids, halfAsteroids, quarterAsteroids, player);
-	Update(player);
+	UpdateAsteroids(asteroids, halfAsteroids, quarterAsteroids, player);
+	UpdatePlayer(player);
 
 	UpdateCollisions(player, asteroids, halfAsteroids, quarterAsteroids, gamseSceen);
 }
@@ -263,17 +263,17 @@ static void ShowCrash(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 static void Draw(Player player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	DrawTextureV(gamePlayBacground, {0, 0}, RAYWHITE);
-	Draw(player);
-	Draw(asteroids, asteroidsQnty);
-	Draw(halfAsteroids, halfAsteroidsQnty);
-	Draw(quarterAsteroids, quarterAsteroidsQnty);
+	DrawPlayer(player);
+	DrawAsteroids(asteroids, asteroidsQnty);
+	DrawAsteroids(halfAsteroids, halfAsteroidsQnty);
+	DrawAsteroids(quarterAsteroids, quarterAsteroidsQnty);
 }
 
 static void GameLoop(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
 {
 	if (!player.isColliding)
 	{
-		GetInput(player, gamseSceen);
+		GetPlayerInput(player, gamseSceen);
 
 		UpdateAll(player, asteroids, halfAsteroids, quarterAsteroids, gamseSceen);
 	}
@@ -290,8 +290,8 @@ void Play(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid
 	if (loading)
 	{
 		gamePlayBacground = LoadTexture("Assets/Images/background.png");
-		Load(player);
-		Load(asteroids, halfAsteroids, quarterAsteroids);
+		LoadPlayer(player);
+		LoadAsteroids(asteroids, halfAsteroids, quarterAsteroids);
 		loading = false;
 	}
 	

@@ -1,5 +1,11 @@
 #include "AsteroidsManager.h"
 
+#include "GameData.h"
+
+#include "raylib.h"
+#include "raymath.h"
+
+#include <iostream>
 
 namespace AsteroidsManager
 {
@@ -13,33 +19,33 @@ namespace AsteroidsManager
 }
 
 
-void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+void LoadAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	for (int i = 0; i < asteroidsQnty; i++)
 	{
 		asteroids[i].texture = LoadTexture("Assets/Images/bigAsteroid.png");
-		asteroids[i].radius = asteroids[i].texture.width / 2;
+		asteroids[i].radius = asteroids[i].texture.width / 2.0f;
 		asteroids[i].mass = 1.0f;
 	}
 
 	for (int i = 0; i < halfAsteroidsQnty; i++)
 	{
 		halfAsteroids[i].texture = LoadTexture("Assets/Images/halfAsteroid.png");
-		halfAsteroids[i].radius = halfAsteroids[i].texture.width / 2;
+		halfAsteroids[i].radius = halfAsteroids[i].texture.width / 2.0f;
 		halfAsteroids[i].mass = 0.75f;
 	}
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
 		quarterAsteroids[i].texture = LoadTexture("Assets/Images/quarterAsteroid.png");
-		quarterAsteroids[i].radius = quarterAsteroids[i].texture.width / 2;
+		quarterAsteroids[i].radius = quarterAsteroids[i].texture.width / 2.0f;
 		quarterAsteroids[i].mass = 0.5f;
 	}
 }
 
 static void SpawnBig(Asteroid& asteroid, Player player)
 {
-	float elapsedTime = GetTime() - lastDrop;
+	float elapsedTime = static_cast<float>(GetTime()) - lastDrop;
 
 	if (activeAsteroids < asteroidsQnty && elapsedTime > 3.0f)
 	{
@@ -51,15 +57,15 @@ static void SpawnBig(Asteroid& asteroid, Player player)
 		Vector2 spawner3{ static_cast<float>(screenWidth),0.0f };
 		Vector2 spawner4{ static_cast<float>(screenWidth),static_cast<float>(screenHeight) };
 
-		if (player.position.x < screenWidth / 2 && player.position.y < screenHeight / 2)
+		if (player.position.x < screenWidth / 2 && player.position.y < screenHeight / 2.0f)
 		{
 			playerSector = 0;
 		}
-		else if (player.position.x > screenWidth / 2 && player.position.y < screenHeight / 2)
+		else if (player.position.x > screenWidth / 2 && player.position.y < screenHeight / 2.0f)
 		{
 			playerSector = 1;
 		}
-		else if (player.position.x < screenWidth / 2 && player.position.y > screenHeight / 2)
+		else if (player.position.x < screenWidth / 2 && player.position.y > screenHeight / 2.0f)
 		{
 			playerSector = 2;
 		}
@@ -104,7 +110,7 @@ static void SpawnBig(Asteroid& asteroid, Player player)
 
 		asteroid.isAlive = true;
 		activeAsteroids++;
-		lastDrop = GetTime();
+		lastDrop = static_cast<float>(GetTime());
 
 		std::cout << "Active instances: " << activeAsteroids << std::endl;
 	}
@@ -124,7 +130,7 @@ void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& ac
 		{
 			toSpawn[i].isAlive = true;
 			toSpawn[i].isSpawning = true;
-			toSpawn[i].lastSpawn = GetTime();
+			toSpawn[i].lastSpawn = static_cast<float>(GetTime());
 			toSpawn[i].position = brocken.position;
 			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, -90.0f);
@@ -135,7 +141,7 @@ void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& ac
 		{
 			toSpawn[i].isAlive = true;
 			toSpawn[i].isSpawning = true;
-			toSpawn[i].lastSpawn = GetTime();
+			toSpawn[i].lastSpawn = static_cast<float>(GetTime());
 			toSpawn[i].position = brocken.position;
 			toSpawn[i].direction = bullet.direction;
 			toSpawn[i].direction = Vector2Rotate(toSpawn[i].direction, 90.0f);
@@ -154,31 +160,31 @@ static void Move(Asteroid* asteroids, int quantity)
 			asteroids[i].velocity = Vector2Scale(asteroids[i].direction, asteroids[i].speed * GetFrameTime());
 			asteroids[i].position = Vector2Add(asteroids[i].position, asteroids[i].velocity);
 
-			if (asteroids[i].position.x > screenWidth + asteroids[i].texture.width / 2)
+			if (asteroids[i].position.x > screenWidth + asteroids[i].texture.width / 2.0f)
 			{
-				asteroids[i].position.x = (-asteroids[i].texture.width / 2);
+				asteroids[i].position.x = (-asteroids[i].texture.width / 2.0f);
 				asteroids[i].position.y = screenHeight - asteroids[i].position.y;
 			}
-			else if (asteroids[i].position.x < 0.0f - asteroids[i].texture.width / 2)
+			else if (asteroids[i].position.x < 0.0f - asteroids[i].texture.width / 2.0f)
 			{
-				asteroids[i].position.x = screenWidth + (asteroids[i].texture.width / 2);
+				asteroids[i].position.x = screenWidth + (asteroids[i].texture.width / 2.0f);
 				asteroids[i].position.y = screenHeight - asteroids[i].position.y;
 			}
-			else if (asteroids[i].position.y > screenHeight + asteroids[i].texture.height / 2)
+			else if (asteroids[i].position.y > screenHeight + asteroids[i].texture.height / 2.0f)
 			{
 				asteroids[i].position.x = screenWidth - asteroids[i].position.x;
-				asteroids[i].position.y = (-asteroids[i].texture.height / 2);
+				asteroids[i].position.y = (-asteroids[i].texture.height / 2.0f);
 			}
-			else if (asteroids[i].position.y < 0.0f - asteroids[i].texture.height / 2)
+			else if (asteroids[i].position.y < 0.0f - asteroids[i].texture.height / 2.0f)
 			{
 				asteroids[i].position.x = screenWidth - asteroids[i].position.x;
-				asteroids[i].position.y = screenHeight + (asteroids[i].texture.height / 2);
+				asteroids[i].position.y = screenHeight + (asteroids[i].texture.height / 2.0f);
 			}
 		}
 	}
 }
 
-void Draw(Asteroid* asteroids, int quantity)
+void DrawAsteroids(Asteroid* asteroids, int quantity)
 {
 	for (int i = 0; i < quantity; i++)
 	{
@@ -195,7 +201,7 @@ static void CheckTimers(Asteroid& asteroid)
 
 	if (asteroid.isSpawning)
 	{
-		elapsedTime = GetTime() - asteroid.lastSpawn;
+		elapsedTime = static_cast<float>(GetTime()) - asteroid.lastSpawn;
 
 		if (elapsedTime > 1.0f)
 		{
@@ -204,7 +210,7 @@ static void CheckTimers(Asteroid& asteroid)
 	}
 	else if (asteroid.isColliding)
 	{
-		elapsedTime = GetTime() - asteroid.lastCollide;
+		elapsedTime = static_cast<float>(GetTime()) - asteroid.lastCollide;
 
 		if (elapsedTime > 1.0f)
 		{
@@ -213,7 +219,7 @@ static void CheckTimers(Asteroid& asteroid)
 	}
 }
 
-void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player)
+void UpdateAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player)
 {
 	for (int i = 0; i < asteroidsQnty; i++)
 	{

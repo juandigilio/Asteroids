@@ -18,6 +18,8 @@ namespace Assets
 	extern Texture2D backButton;
 	extern Texture2D backButtonAct;
 
+	extern Sound click;
+
 	extern Font font;
 	extern float fontSize;
 	extern float spacing;

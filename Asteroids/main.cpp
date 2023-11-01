@@ -1,6 +1,6 @@
 #include "MenuManager.h"
 
-void main()
+int main()
 {
 	StartUp();
 }

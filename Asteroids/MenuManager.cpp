@@ -6,6 +6,8 @@
 #include "AsteroidsManager.h"
 #include "GameLoop.h"
 
+#include <iostream>
+
 
 namespace Assets
 {
@@ -23,6 +25,8 @@ namespace Assets
 	extern Texture2D smallWindow{};
 	extern Texture2D backButton{};
 	extern Texture2D backButtonAct{};
+
+	extern Sound click{};
 
 	extern Font font{};
 	extern float fontSize{};
@@ -46,6 +50,8 @@ namespace Assets
 	extern Vector2 backButtonPos{};
 	extern Vector2 gitHubPos{};
 	extern Vector2 gitHubSize{};
+
+	//extern bool 
 }
 
 using namespace Globals;
@@ -64,32 +70,33 @@ void InitMenu()
 	backButton = LoadTexture("Assets/Images/Menu/backBtn.png");
 	backButtonAct = LoadTexture("Assets/Images/Menu/backBtnAct.png");
 
+	click = LoadSound("Assets/Sounds/click.wav");
 
 	font = LoadFont("Assets/Fonts/04B_30__.TTF");
 	fontSize = font.baseSize * 2.0f;
 
-	playPosContainer.x = (screenWidth / 2) - (smallContainer.width / 2);
-	playPosContainer.y = ((screenHeight / 5)) - (smallContainer.height / 2);
-	playPos.x = (screenWidth / 2) - MeasureTextEx(font, "Play", fontSize, spacing).x / 2.0f + 8;
-	playPos.y = (screenHeight / 5) - (fontSize / 2);
+	playPosContainer.x = (screenWidth / 2.0f) - (smallContainer.width / 2.0f);
+	playPosContainer.y = ((screenHeight / 5.0f)) - (smallContainer.height / 2.0f);
+	playPos.x = (screenWidth / 2.0f) - MeasureTextEx(font, "Play", fontSize, spacing).x / 2.0f + 8.0f;
+	playPos.y = (screenHeight / 5.0f) - (fontSize / 2.0f);
 
-	instructionsPosContainer.x = (screenWidth / 2) - (largeContainer.width / 2);
-	instructionsPosContainer.y = ((screenHeight / 5) * 2) - (largeContainer.height / 2);
-	instructionsPos.x = (screenWidth / 2) - MeasureTextEx(font, "Instructions", fontSize, instrucrtionsSpacing).x / 2.0f + 8;
-	instructionsPos.y = ((screenHeight / 5) * 2) - (fontSize / 2);
+	instructionsPosContainer.x = (screenWidth / 2.0f) - (largeContainer.width / 2.0f);
+	instructionsPosContainer.y = ((screenHeight / 5.0f) * 2.0f) - (largeContainer.height / 2.0f);
+	instructionsPos.x = (screenWidth / 2.0f) - MeasureTextEx(font, "Instructions", fontSize, instrucrtionsSpacing).x / 2.0f + 8.0f;
+	instructionsPos.y = ((screenHeight / 5.0f) * 2.0f) - (fontSize / 2.0f);
 
-	creditsPosContainer.x = (screenWidth / 2) - (mediumContainer.width / 2);
-	creditsPosContainer.y = ((screenHeight / 5) * 3) - (mediumContainer.height / 2);
-	creditsPos.x = (screenWidth / 2) - MeasureTextEx(font, "Credits", fontSize, spacing).x / 2.0f + 20;
-	creditsPos.y = ((screenHeight / 5) * 3) - (fontSize / 2);
+	creditsPosContainer.x = (screenWidth / 2.0f) - (mediumContainer.width / 2.0f);
+	creditsPosContainer.y = ((screenHeight / 5.0f) * 3.0f) - (mediumContainer.height / 2.0f);
+	creditsPos.x = (screenWidth / 2.0f) - MeasureTextEx(font, "Credits", fontSize, spacing).x / 2.0f + 20.0f;
+	creditsPos.y = ((screenHeight / 5.0f) * 3.0f) - (fontSize / 2.0f);
 
-	exitPosContainer.x = (screenWidth / 2) - (smallContainer.width / 2);
-	exitPosContainer.y = (screenHeight / 5) * 4 - (smallContainer.height / 2);
-	exitPos.x = (screenWidth / 2) - MeasureTextEx(font, "Exit", fontSize, spacing).x / 2.0f + 8;
-	exitPos.y = (screenHeight / 5) * 4 -(fontSize / 2);
+	exitPosContainer.x = (screenWidth / 2.0f) - (smallContainer.width / 2.0f);
+	exitPosContainer.y = (screenHeight / 5.0f) * 4.0f - (smallContainer.height / 2.0f);
+	exitPos.x = (screenWidth / 2.0f) - MeasureTextEx(font, "Exit", fontSize, spacing).x / 2.0f + 8.0f;
+	exitPos.y = (screenHeight / 5.0f) * 4.0f -(fontSize / 2.0f);
 
-	backButtonPos.x = 15;
-	backButtonPos.y = 15;
+	backButtonPos.x = 15.0f;
+	backButtonPos.y = 15.0f;
 }
 
 static void GetInput(GameSceen& currentSceen)
@@ -187,8 +194,8 @@ void ShowMenu(GameSceen& currentSceen)
 
 static void DrawInstrucions()
 {
-	bigWindowPos.x = (screenWidth / 2) - (bigWindow.width / 2);
-	bigWindowPos.y = (screenHeight / 2) - (bigWindow.height / 2);
+	bigWindowPos.x = (screenWidth / 2.0f) - (bigWindow.width / 2.0f);
+	bigWindowPos.y = (screenHeight / 2.0f) - (bigWindow.height / 2.0f);
 
 	Vector2 textPos;
 
@@ -236,7 +243,7 @@ static void ShowInstructions(GameSceen& currentSceen)
 	GetInput(currentSceen);
 }
 
-static void DrawCredits(GameSceen& currentSceen)
+static void DrawCredits()
 {
 	Vector2 textPos;
 
@@ -288,7 +295,7 @@ static void DrawCredits(GameSceen& currentSceen)
 
 void ShowCredits(GameSceen& currentSceen)
 {
-	DrawCredits(currentSceen);
+	DrawCredits();
 
 	GetInput(currentSceen);
 }
@@ -303,7 +310,7 @@ void StartUp()
 	Asteroid* halfAsteroids = new Asteroid[halfAsteroidsQnty];
 	Asteroid* cuarterAsteroids = new Asteroid[quarterAsteroidsQnty];
 
-	srand(time(NULL));
+	srand(static_cast<unsigned>(time(NULL)));
 
 	InitWindow(screenWidth, screenHeight, "After-Roids");
 

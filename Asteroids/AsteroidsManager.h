@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Asteroids.h"
-
-#include "GameData.h"
 #include "Player.h"
 
-#include "raylib.h"
-#include "raymath.h"
+
+
 
 namespace AsteroidsManager
 {
@@ -22,7 +20,7 @@ namespace AsteroidsManager
 using namespace Globals;
 using namespace AsteroidsManager;
 
-void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids);
-void Draw(Asteroid* asteroids, int quantity);
-void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player);
+void LoadAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids);
+void DrawAsteroids(Asteroid* asteroids, int quantity);
+void UpdateAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player);
 void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty);
