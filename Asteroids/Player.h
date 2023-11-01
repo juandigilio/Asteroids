@@ -212,7 +212,6 @@ static void GetInput(Player& player, GameSceen& currentSceen)
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        //std::cout << "disparo" << std::endl;
         Shoot(player);
     }
 

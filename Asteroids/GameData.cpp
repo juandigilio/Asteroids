@@ -9,5 +9,3 @@ namespace Globals
 	extern bool loading = true;
 	extern float interpolationFactor = 2.0f;
 }
-
-
