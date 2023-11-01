@@ -39,39 +39,43 @@ void Load(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroi
 
 static void SpawnBig(Asteroid& asteroid, Player player)
 {
-	int spawnPoint;
-	int playerSector;
+	float elapsedTime = GetTime() - lastDrop;
 
-	Vector2 spawner1{ 0.0f,0.0f };
-	Vector2 spawner2{ 0.0f, static_cast<float>(screenHeight) };
-	Vector2 spawner3{ static_cast<float>(screenWidth),0.0f };
-	Vector2 spawner4{ static_cast<float>(screenWidth),static_cast<float>(screenHeight) };
+	if (activeAsteroids < asteroidsQnty && elapsedTime > 3.0f)
+	{
+		int spawnPoint;
+		int playerSector;
 
-	if (player.position.x < screenWidth / 2 && player.position.y < screenHeight / 2)
-	{
-		playerSector = 0;
-	}
-	else if (player.position.x > screenWidth / 2 && player.position.y < screenHeight / 2)
-	{
-		playerSector = 1;
-	}
-	else if (player.position.x < screenWidth / 2 && player.position.y > screenHeight / 2)
-	{
-		playerSector = 2;
-	}
-	else
-	{
-		playerSector = 3;
-	}
+		Vector2 spawner1{ 0.0f,0.0f };
+		Vector2 spawner2{ 0.0f, static_cast<float>(screenHeight) };
+		Vector2 spawner3{ static_cast<float>(screenWidth),0.0f };
+		Vector2 spawner4{ static_cast<float>(screenWidth),static_cast<float>(screenHeight) };
 
-	do
-	{
-		spawnPoint = rand() % 4;
+		if (player.position.x < screenWidth / 2 && player.position.y < screenHeight / 2)
+		{
+			playerSector = 0;
+		}
+		else if (player.position.x > screenWidth / 2 && player.position.y < screenHeight / 2)
+		{
+			playerSector = 1;
+		}
+		else if (player.position.x < screenWidth / 2 && player.position.y > screenHeight / 2)
+		{
+			playerSector = 2;
+		}
+		else
+		{
+			playerSector = 3;
+		}
 
-	} while (spawnPoint == playerSector);
+		do
+		{
+			spawnPoint = rand() % 4;
 
-	switch (spawnPoint)
-	{
+		} while (spawnPoint == playerSector);
+
+		switch (spawnPoint)
+		{
 		case 0:
 		{
 			asteroid.position = spawner1;
@@ -92,15 +96,18 @@ static void SpawnBig(Asteroid& asteroid, Player player)
 			asteroid.position = spawner4;
 			break;
 		}
-	}
+		}
 
-	asteroid.direction = Vector2Subtract(player.position, asteroid.position);
-	float length = Vector2Length(asteroid.direction);
-	asteroid.direction = Vector2Divide(asteroid.direction, { length, length });
-	
-	asteroid.isAlive = true;
-	activeAsteroids++;
-	lastDrop = GetTime();
+		asteroid.direction = Vector2Subtract(player.position, asteroid.position);
+		float length = Vector2Length(asteroid.direction);
+		asteroid.direction = Vector2Divide(asteroid.direction, { length, length });
+
+		asteroid.isAlive = true;
+		activeAsteroids++;
+		lastDrop = GetTime();
+
+		std::cout << "Active instances: " << activeAsteroids << std::endl;
+	}
 }
 
 void SpawnChildrens(Bullet bullet, Asteroid& brocken, Asteroid* toSpawn, int& actives, int& maxQnty)
@@ -182,23 +189,60 @@ void Draw(Asteroid* asteroids, int quantity)
 	}
 }
 
+static void CheckTimers(Asteroid& asteroid)
+{
+	float elapsedTime;
+
+	if (asteroid.isSpawning)
+	{
+		elapsedTime = GetTime() - asteroid.lastSpawn;
+
+		if (elapsedTime > 1.0f)
+		{
+			asteroid.isSpawning = false;
+		}
+	}
+	else if (asteroid.isColliding)
+	{
+		elapsedTime = GetTime() - asteroid.lastCollide;
+
+		if (elapsedTime > 1.0f)
+		{
+			asteroid.isColliding = false;
+		}
+	}
+}
+
 void Update(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, Player player)
 {
-	float elapsedTime = GetTime() - lastDrop;
-
-	if (activeAsteroids < asteroidsQnty && elapsedTime > 3.0f)
+	for (int i = 0; i < asteroidsQnty; i++)
 	{
-		for (int i = 0; i < asteroidsQnty; i++)
+		if (!asteroids[i].isAlive)
 		{
-			if (!asteroids[i].isAlive)
-			{
-				SpawnBig(asteroids[i], player);
-				std::cout << "Active instances: " << activeAsteroids << std::endl;
-				break;
-			}
+			SpawnBig(asteroids[i], player);
+		}
+		else 
+		{
+			CheckTimers(asteroids[i]);
 		}
 	}
 
+	for (int i = 0; i < halfAsteroidsQnty; i++)
+	{
+		if (halfAsteroids[i].isAlive)
+		{
+			CheckTimers(halfAsteroids[i]);
+		}
+	}
+
+	for (int i = 0; i < quarterAsteroidsQnty; i++)
+	{
+		if (quarterAsteroids[i].isAlive)
+		{
+			CheckTimers(quarterAsteroids[i]);
+		}
+	}
+	
 	Move(asteroids, asteroidsQnty);
 	Move(halfAsteroids, halfAsteroidsQnty);
 	Move(quarterAsteroids, quarterAsteroidsQnty);

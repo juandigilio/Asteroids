@@ -87,32 +87,28 @@ static void AsteroidsRebound(Asteroid& asteroid1, Asteroid& asteroid2)
 {
 	Vector2 collisionVector = Vector2Subtract(asteroid1.position, asteroid2.position);
 
-	// Calcula el ángulo de colisión
 	float collisionAngle = atan2(collisionVector.y, collisionVector.x);
 
-	// Aplica un rebote con el ángulo opuesto (180 grados)
 	asteroid1.direction = Vector2Rotate(asteroid1.direction, (180.0f - collisionAngle) * RAD2DEG);
 	asteroid2.direction = Vector2Rotate(asteroid2.direction, (180.0f - collisionAngle) * RAD2DEG);
 
-	// Ajusta las posiciones para evitar la superposición
-	float collisionDistance = Vector2Length(collisionVector);
-	float overlap = (asteroid1.radius * 2) - collisionDistance;
-	collisionVector = Vector2Divide(collisionVector, { collisionDistance, collisionDistance });
-	asteroid1.position = Vector2Add(asteroid1.position, Vector2Scale(collisionVector, -overlap * 0.5f));
-	asteroid2.position = Vector2Add(asteroid2.position, Vector2Scale(collisionVector, overlap * 0.5f));
+	asteroid1.isColliding = true;
+	asteroid1.lastCollide = GetTime();
+	asteroid2.isColliding = true;
+	asteroid2.lastCollide = GetTime();
 }
 
 static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	for (int i = 0; i < asteroidsQnty; i++)
 	{
-		if (asteroids[i].isAlive)
+		if (asteroids[i].isAlive && !asteroids[i].isSpawning && !asteroids[i].isColliding)
 		{
 			for (int j = 0; j < asteroidsQnty; j++)
 			{
-				if (asteroids[j].isAlive && i != j)
+				if (asteroids[j].isAlive && i != j && !asteroids[j].isSpawning && !asteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(asteroids[i].radius, asteroids[j].radius, asteroids[i].position, asteroids[j].position))
+					if (CheckCircleCircleCollision(asteroids[i].radius, asteroids[j].radius, asteroids[i].GetCenter(), asteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(asteroids[i], asteroids[j]);
 						break;
@@ -122,21 +118,21 @@ static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroi
 
 			for (int j = 0; j < halfAsteroidsQnty; j++)
 			{
-				if (halfAsteroids[j].isAlive)
+				if (halfAsteroids[j].isAlive && !halfAsteroids[j].isSpawning && !halfAsteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(asteroids[i].radius, halfAsteroids[j].radius, asteroids[i].position, halfAsteroids[j].position))
+					if (CheckCircleCircleCollision(asteroids[i].radius, halfAsteroids[j].radius, asteroids[i].GetCenter(), halfAsteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(asteroids[i], halfAsteroids[j]);
 						break;
-					}					
+					}
 				}
 			}
 
 			for (int j = 0; j < quarterAsteroidsQnty; j++)
 			{
-				if (quarterAsteroids[j].isAlive)
+				if (quarterAsteroids[j].isAlive && !quarterAsteroids[j].isSpawning && !quarterAsteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(asteroids[i].radius, quarterAsteroids[j].radius, asteroids[i].position, quarterAsteroids[j].position))
+					if (CheckCircleCircleCollision(asteroids[i].radius, quarterAsteroids[j].radius, asteroids[i].GetCenter(), quarterAsteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(asteroids[i], quarterAsteroids[j]);
 						break;
@@ -148,13 +144,13 @@ static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroi
 
 	for (int i = 0; i < halfAsteroidsQnty; i++)
 	{
-		if (halfAsteroids[i].isAlive)
+		if (halfAsteroids[i].isAlive && !halfAsteroids[i].isSpawning && !halfAsteroids[i].isColliding)
 		{
 			for (int j = 0; j < halfAsteroidsQnty; j++)
 			{
-				if (halfAsteroids[j].isAlive && i != j)
+				if (halfAsteroids[j].isAlive && i != j && !halfAsteroids[j].isSpawning && !halfAsteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(halfAsteroids[i].radius, halfAsteroids[j].radius, halfAsteroids[i].position, halfAsteroids[j].position))
+					if (CheckCircleCircleCollision(halfAsteroids[i].radius, halfAsteroids[j].radius, halfAsteroids[i].GetCenter(), halfAsteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(halfAsteroids[i], halfAsteroids[j]);
 						break;
@@ -164,9 +160,9 @@ static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroi
 
 			for (int j = 0; j < quarterAsteroidsQnty; j++)
 			{
-				if (quarterAsteroids[j].isAlive)
+				if (quarterAsteroids[j].isAlive && !quarterAsteroids[j].isSpawning && !quarterAsteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(halfAsteroids[i].radius, quarterAsteroids[j].radius, halfAsteroids[i].position, quarterAsteroids[j].position))
+					if (CheckCircleCircleCollision(halfAsteroids[i].radius, quarterAsteroids[j].radius, halfAsteroids[i].GetCenter(), quarterAsteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(halfAsteroids[i], quarterAsteroids[j]);
 						break;
@@ -178,13 +174,13 @@ static void CheckAsteroidsVsAsteroids(Asteroid* asteroids, Asteroid* halfAsteroi
 
 	for (int i = 0; i < quarterAsteroidsQnty; i++)
 	{
-		if (quarterAsteroids[i].isAlive)
+		if (quarterAsteroids[i].isAlive && !quarterAsteroids[i].isSpawning && !quarterAsteroids[i].isColliding)
 		{
 			for (int j = 0; j < quarterAsteroidsQnty; j++)
 			{
-				if (quarterAsteroids[j].isAlive && i != j)
+				if (quarterAsteroids[j].isAlive && i != j && !quarterAsteroids[j].isSpawning && !quarterAsteroids[j].isColliding)
 				{
-					if (CheckCircleCircleCollision(quarterAsteroids[i].radius, quarterAsteroids[j].radius, quarterAsteroids[i].position, quarterAsteroids[j].position))
+					if (CheckCircleCircleCollision(quarterAsteroids[i].radius, quarterAsteroids[j].radius, quarterAsteroids[i].GetCenter(), quarterAsteroids[j].GetCenter()))
 					{
 						AsteroidsRebound(quarterAsteroids[i], quarterAsteroids[j]);
 						break;
@@ -203,7 +199,7 @@ static void UpdateCollisions(Player& player, Asteroid* asteroids, Asteroid* half
 
 	CheckAsteroidsVsEntities(player, quarterAsteroids, quarterAsteroids, quarterAsteroidsQnty, activeQuarters, quarterAsteroidsQnty, quarterAsteroidsQnty, gamseSceen, true);
 
-	//CheckAsteroidsVsAsteroids(asteroids, halfAsteroids, quarterAsteroids);
+	CheckAsteroidsVsAsteroids(asteroids, halfAsteroids, quarterAsteroids);
 }
 
 static void UpdateAll(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
