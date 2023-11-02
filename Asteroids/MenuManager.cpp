@@ -49,6 +49,8 @@ namespace Assets
 	
 	extern Vector2 gitHubPos{};
 	extern Vector2 gitHubSize{};
+	extern Vector2 itchioPos{};
+	extern Vector2 itchioSize{};
 
 	extern bool isClicking = false;
 }
@@ -238,6 +240,23 @@ static void GetInput(GameSceen& currentSceen)
 				OpenURL("https://github.com/juandigilio");
 			}	
 		}
+		else if (currentSceen == GameSceen::CREDITS && ((mouseX > itchioPos.x && mouseX < itchioPos.x + itchioSize.x) && (mouseY > itchioPos.y && mouseY < itchioPos.y + itchioSize.y)))
+		{
+			DrawTextEx(font, "https://juandigilio.itch.io", itchioPos, fontSize * 0.2f, spacing / 8.0f, GREEN);
+
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			{
+				PlaySound(clickPressed);
+				OpenURL("https://juandigilio.itch.io");
+			}
+		}
 		else
 		{
 			isClicking = false;
@@ -327,22 +346,26 @@ static void DrawCredits()
 	Vector2 textPos;
 
 	smallWindowPos.x = (screenWidth / 2.0f) - (smallWindow.width / 2.0f);
-	smallWindowPos.y = (screenHeight / 2.0f) - (smallWindow.height / 2.0f);
+	smallWindowPos.y = (screenHeight / 2.0f) - (smallWindow.height / 2.0f) + 10.0f;
 
 	DrawTexture(background, 0, 0, WHITE);
 	DrawTextureV(smallWindow, smallWindowPos, WHITE);
 	DrawTextureV(backButton, backButtonPos, WHITE);
 
 	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Created by Juan Digilio", fontSize * 0.6f, spacing / 4.0f).x / 2.0f;
-	textPos.y = smallWindowPos.y - 80;
+	textPos.y = smallWindowPos.y - 130;
 	DrawTextEx(font, "Created by Juan Digilio", textPos, fontSize * 0.6f, spacing / 4.0f, RAYWHITE);
 
-	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Assets downloaded from itch.io", fontSize * 0.4f, spacing / 8.0f).x / 2.0f;
-	textPos.y += 40;
-	DrawTextEx(font, "Assets downloaded from itch.io", textPos, fontSize * 0.4f, spacing / 8.0f, RAYWHITE);
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Assets author:	MattWalkden", fontSize * 0.3f, spacing / 8.0f).x / 2.0f;
+	textPos.y += 55;
+	DrawTextEx(font, "Assets author: MattWalkden", textPos, fontSize * 0.3f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Downloaded from creativecommons.org", fontSize * 0.3f, spacing / 8.0f).x / 2.0f;
+	textPos.y += 20;
+	DrawTextEx(font, "Downloaded from creativecommons.org", textPos, fontSize * 0.3f, spacing / 8.0f, RAYWHITE);
 	
 	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "This is remake of the classic", fontSize * 0.2f, spacing / 8.0f).x / 2.0f;
-	textPos.y += 75;
+	textPos.y += 90;
 	DrawTextEx(font, "This is remake of the classic", textPos, fontSize * 0.2f, spacing / 8.0f, RAYWHITE);
 
 	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Asteroids game made in raylib for my", fontSize * 0.2f, spacing / 8.0f).x / 2.0f;
@@ -366,10 +389,15 @@ static void DrawCredits()
 	DrawTextEx(font, "can find it in my GitHub", textPos, fontSize * 0.2f, spacing / 8.0f, RAYWHITE);
 
 	gitHubSize = MeasureTextEx(font, "https://github.com/juandigilio", fontSize * 0.2f, spacing / 8.0f);
+	itchioSize = MeasureTextEx(font, "https://juandigilio.itch.io/", fontSize * 0.2f, spacing / 8.0f);
 
 	gitHubPos.x = (screenWidth / 2) - gitHubSize.x / 2.0f;
 	gitHubPos.y = textPos.y + 30;
 	DrawTextEx(font, "https://github.com/juandigilio", gitHubPos, fontSize * 0.2f, spacing / 8.0f, RAYWHITE);
+
+	itchioPos.x = (screenWidth / 2) - itchioSize.x / 2.0f;
+	itchioPos.y = gitHubPos.y + 20;
+	DrawTextEx(font, "https://juandigilio.itch.io", itchioPos, fontSize * 0.2f, spacing / 8.0f, RAYWHITE);
 }
 
 static void ShowCredits(GameSceen& currentSceen)
