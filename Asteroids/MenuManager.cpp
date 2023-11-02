@@ -360,9 +360,9 @@ static void DrawCredits()
 	textPos.y += 55;
 	DrawTextEx(font, "Assets author: MattWalkden", textPos, fontSize * 0.3f, spacing / 8.0f, RAYWHITE);
 
-	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Downloaded from creativecommons.org", fontSize * 0.3f, spacing / 8.0f).x / 2.0f;
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Downloaded from craftpix.net", fontSize * 0.3f, spacing / 8.0f).x / 2.0f;
 	textPos.y += 20;
-	DrawTextEx(font, "Downloaded from creativecommons.org", textPos, fontSize * 0.3f, spacing / 8.0f, RAYWHITE);
+	DrawTextEx(font, "Downloaded from craftpix.net", textPos, fontSize * 0.3f, spacing / 8.0f, RAYWHITE);
 	
 	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "This is remake of the classic", fontSize * 0.2f, spacing / 8.0f).x / 2.0f;
 	textPos.y += 90;
