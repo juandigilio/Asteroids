@@ -2,3 +2,5 @@
 debug/
 x64/
 Release/
+bin/
+obj/
