@@ -4,8 +4,6 @@
 #include "Player.h"
 
 
-
-
 namespace AsteroidsManager
 {
 	extern int asteroidsQnty;

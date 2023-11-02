@@ -9,7 +9,7 @@
 
 namespace AsteroidsManager
 {
-	extern int asteroidsQnty = 5;
+	extern int asteroidsQnty = 12;
 	extern int halfAsteroidsQnty = asteroidsQnty * 3;
 	extern int quarterAsteroidsQnty = halfAsteroidsQnty * 3;
 	extern int activeAsteroids = 0;

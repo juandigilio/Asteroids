@@ -4,26 +4,47 @@
 
 #include "raymath.h"
 
+namespace Assets
+{
+	extern Sound crash{};
+	
+	extern Texture2D pauseButton{};
+	extern Texture2D pauseButtonAct{};
+
+	extern Vector2 pauseButtonPos{};
+}
+
 using namespace AsteroidsManager;
+using namespace Assets;
 
 static Texture2D gamePlayBacground{};
 
+static void LoadGame()
+{
+	gamePlayBacground = LoadTexture("Assets/Images/background.png");
+
+	crash = LoadSound("Assets/Sounds/crash.wav");
+	
+	pauseButton = LoadTexture("Assets/Images/Menu/pauseBtn.png");
+	pauseButtonAct = LoadTexture("Assets/Images/Menu/pauseBtnAct.png");
+
+	pauseButtonPos.x = screenWidth - pauseButton.width - 15.0f;
+	pauseButtonPos.y = 15.0f;
+}
 
 static void PlayerCollides(Player& player, GameSceen& gamseSceen)
 {
 	player.isColliding = true;
 	player.lastCollide = static_cast<float>(GetTime());
 	player.availableLives--;
+	PlaySound(crash);
 
-	if (player.availableLives == 2)
+	if (player.totalPoints > highScore)
 	{
-		player.totalPoints = -150;
+		highScore = player.totalPoints;
 	}
-	else if (player.availableLives == 1)
-	{
-		player.totalPoints = -300;
-	}
-	else
+	
+	if (player.availableLives == 0)
 	{
 		gamseSceen = GameSceen::RESULTS;
 	}
@@ -71,9 +92,12 @@ static void CheckAsteroidsVsEntities(Player& player, Asteroid* asteroids, Astero
 						{
 							KillAsteroid(asteroids[i], player.bullets[j], actAsteroids);
 
+							player.totalPoints += 30;
+
 							if (!isQuarter)
 							{
 								SpawnChildrens(player.bullets[j], asteroids[i], toSpawn, activesToSpawn, maxToSpawn);
+								player.totalPoints += 20;
 							}
 						}
 					}
@@ -206,8 +230,8 @@ static void UpdateAll(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 {
 	UpdateAsteroids(asteroids, halfAsteroids, quarterAsteroids, player);
 	UpdatePlayer(player);
-
 	UpdateCollisions(player, asteroids, halfAsteroids, quarterAsteroids, gamseSceen);
+	UpdateMusicStream(gameLoopMusic);
 }
 
 static void RestartAllEntities(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
@@ -216,6 +240,8 @@ static void RestartAllEntities(Player& player, Asteroid* asteroids, Asteroid* ha
 	player.position.y = screenCenter.y - (player.texture.height / 2);
 	player.velocity = { 0, 0 };
 	player.speed = 0;
+	player.totalPoints = 0;
+	player.thousandCouner = 0;
 
 	for (int i = 0; i < maxBulletsQnty; i++)
 	{
@@ -260,40 +286,84 @@ static void ShowCrash(Player& player, Asteroid* asteroids, Asteroid* halfAsteroi
 	}
 }
 
-static void Draw(Player player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
+static void GetHUDInput(GameSceen& currentSceen)
+{
+	int mouseX = GetMouseX();
+	int mouseY = GetMouseY();
+
+	if (currentSceen == GameSceen::GAME)
+	{
+		if ((mouseX > pauseButtonPos.x && mouseX < pauseButtonPos.x + pauseButton.width) && (mouseY > pauseButtonPos.y && mouseY < pauseButtonPos.y + pauseButton.height))
+		{
+			DrawTextureEx(pauseButtonAct, pauseButtonPos, 0, 1.0, WHITE);
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			{
+				currentSceen = GameSceen::PAUSE;
+			}
+		}
+	}
+}
+
+static void DrawHUD(Player player)
+{
+	Vector2 textPos;
+
+	textPos.x = 15;
+	textPos.y = screenHeight - fontSize ;
+	DrawTextEx(font, "Score: ", textPos, fontSize * 0.25f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x += MeasureTextEx(font, "Score: ", fontSize * 0.25f, spacing / 8.0f).x;
+	DrawTextEx(font, TextFormat("%01i", player.totalPoints), textPos, fontSize * 0.25f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x = 15;
+	textPos.y += 20;
+	DrawTextEx(font, "High score: ", textPos, fontSize * 0.25f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x += MeasureTextEx(font, "High score: ", fontSize * 0.25f, spacing / 8.0f).x;
+	DrawTextEx(font, TextFormat("%01i", highScore), textPos, fontSize * 0.25f, spacing / 8.0f, RAYWHITE);
+
+	DrawTextureEx(pauseButton, pauseButtonPos, 0, 1.0, WHITE);
+}
+
+void DrawGame(Player player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids)
 {
 	DrawTextureV(gamePlayBacground, {0, 0}, RAYWHITE);
 	DrawPlayer(player);
 	DrawAsteroids(asteroids, asteroidsQnty);
 	DrawAsteroids(halfAsteroids, halfAsteroidsQnty);
 	DrawAsteroids(quarterAsteroids, quarterAsteroidsQnty);
+	DrawHUD(player);
 }
 
-static void GameLoop(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
+static void GameLoop(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& currentSceen)
 {
 	if (!player.isColliding)
 	{
-		GetPlayerInput(player, gamseSceen);
+		GetPlayerInput(player, currentSceen);
 
-		UpdateAll(player, asteroids, halfAsteroids, quarterAsteroids, gamseSceen);
+		UpdateAll(player, asteroids, halfAsteroids, quarterAsteroids, currentSceen);
 	}
 	else
 	{
 		ShowCrash(player, asteroids, halfAsteroids, quarterAsteroids);
 	}
 
-	Draw(player, asteroids, halfAsteroids, quarterAsteroids);
+	DrawGame(player, asteroids, halfAsteroids, quarterAsteroids);
+
+	GetHUDInput(currentSceen);
 }
 
-void Play(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& gamseSceen)
+void Play(Player& player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& currentSceen)
 {
 	if (loading)
 	{
-		gamePlayBacground = LoadTexture("Assets/Images/background.png");
+		LoadGame();
 		LoadPlayer(player);
 		LoadAsteroids(asteroids, halfAsteroids, quarterAsteroids);
+		RestartAllEntities(player, asteroids, halfAsteroids, quarterAsteroids);
 		loading = false;
 	}
 	
-	GameLoop(player, asteroids, halfAsteroids, quarterAsteroids, gamseSceen);
+	GameLoop(player, asteroids, halfAsteroids, quarterAsteroids, currentSceen);
 }

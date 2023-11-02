@@ -25,16 +25,13 @@ namespace Assets
 	extern Texture2D smallWindow{};
 	extern Texture2D backButton{};
 	extern Texture2D backButtonAct{};
+	extern Texture2D menuButton{};
+	extern Texture2D menuButtonAct{};
+	extern Texture2D exitButton{};
+	extern Texture2D exitButtonAct{};
 
 	extern Sound click{};
-
-	extern Font font{};
-	extern float fontSize{};
-	extern float spacing = 8.0f;
-	extern float instrucrtionsSpacing = 2.0f;
-
-	extern int menuSizeX = 200;
-	extern int menuSizeY = 100;
+	extern Sound clickPressed{};
 
 	extern Vector2 playPos{};
 	extern Vector2 playPosContainer{};
@@ -44,14 +41,16 @@ namespace Assets
 	extern Vector2 creditsPosContainer{};
 	extern Vector2 exitPos{};
 	extern Vector2 exitPosContainer{};
-
 	extern Vector2 bigWindowPos{};
 	extern Vector2 smallWindowPos{};
 	extern Vector2 backButtonPos{};
+	extern Vector2 menuButtonPos{};
+	extern Vector2 exitButtonPos{};
+	
 	extern Vector2 gitHubPos{};
 	extern Vector2 gitHubSize{};
 
-	//extern bool 
+	extern bool isClicking = false;
 }
 
 using namespace Globals;
@@ -69,8 +68,20 @@ void InitMenu()
 	smallWindow = LoadTexture("Assets/Images/Menu/smallWindow.png");
 	backButton = LoadTexture("Assets/Images/Menu/backBtn.png");
 	backButtonAct = LoadTexture("Assets/Images/Menu/backBtnAct.png");
+	menuButton = LoadTexture("Assets/Images/Menu/menuBtn.png");
+	menuButtonAct = LoadTexture("Assets/Images/Menu/menuBtnAct.png");
+	exitButton = LoadTexture("Assets/Images/Menu/exitBtn.png");
+	exitButtonAct = LoadTexture("Assets/Images/Menu/exitBtnAct.png");
+
+	menuMusic = LoadMusicStream("Assets/Sounds/menu.wav");
+	menuMusic.looping = true;
+
+	gameLoopMusic = LoadMusicStream("Assets/Sounds/gameLoop.wav");
+	gameLoopMusic.looping = true;
+	SetMusicVolume(gameLoopMusic, 0.1f);
 
 	click = LoadSound("Assets/Sounds/click.wav");
+	clickPressed = LoadSound("Assets/Sounds/clickPressed.wav");
 
 	font = LoadFont("Assets/Fonts/04B_30__.TTF");
 	fontSize = font.baseSize * 2.0f;
@@ -97,6 +108,12 @@ void InitMenu()
 
 	backButtonPos.x = 15.0f;
 	backButtonPos.y = 15.0f;
+
+	exitButtonPos.x = screenWidth - exitButton.width - 15.0f;
+	exitButtonPos.y = 15.0f;
+
+	menuButtonPos.x = exitButtonPos.x - (menuButton.width + 15.0f);
+	menuButtonPos.y = 15.0f;
 }
 
 static void GetInput(GameSceen& currentSceen)
@@ -110,8 +127,18 @@ static void GetInput(GameSceen& currentSceen)
 		{
 			DrawTextEx(font, "Play", playPos, fontSize, spacing, ORANGE);
 
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
+				PlaySound(clickPressed);
+				StopMusicStream(menuMusic);
+				PlayMusicStream(gameLoopMusic);
 				currentSceen = GameSceen::GAME;
 			}
 		}
@@ -119,8 +146,16 @@ static void GetInput(GameSceen& currentSceen)
 		{
 			DrawTextEx(font, "Instructions", instructionsPos, fontSize, instrucrtionsSpacing, ORANGE);
 
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
+				PlaySound(clickPressed);
 				currentSceen = GameSceen::INSTRUCTIONS;
 			}
 		}
@@ -128,8 +163,16 @@ static void GetInput(GameSceen& currentSceen)
 		{
 			DrawTextEx(font, "Credits", creditsPos, fontSize, 3, ORANGE);
 
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
+				PlaySound(clickPressed);
 				currentSceen = GameSceen::CREDITS;
 			}
 		}
@@ -137,10 +180,22 @@ static void GetInput(GameSceen& currentSceen)
 		{
 			DrawTextEx(font, "Exit", exitPos, fontSize, spacing, ORANGE);
 
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
+				PlaySound(clickPressed);
 				currentSceen = GameSceen::EXIT;
 			}
+		}
+		else
+		{
+			isClicking = false;
 		}
 	}
 	else
@@ -153,19 +208,39 @@ static void GetInput(GameSceen& currentSceen)
 		{
 			DrawTextureV(backButtonAct, backButtonPos, WHITE);
 
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			if (!isClicking)
 			{
-				currentSceen = GameSceen::MENU;
+				isClicking = true;
+
+				PlaySound(click);
 			}
-		}
-		else if ((mouseX > gitHubPos.x && mouseX < gitHubPos.x + gitHubSize.x) && (mouseY > gitHubPos.y && mouseY < gitHubPos.y + gitHubSize.y))
-		{
-			DrawTextEx(font, "https://github.com/juandigilio", gitHubPos, fontSize * 0.2f, spacing / 8.0f, GREEN);
 
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			{
-				OpenURL("https://github.com/juandigilio");
+				PlaySound(clickPressed);
+				currentSceen = GameSceen::MENU;
 			}
+		}
+		else if (currentSceen == GameSceen::CREDITS && ((mouseX > gitHubPos.x && mouseX < gitHubPos.x + gitHubSize.x) && (mouseY > gitHubPos.y && mouseY < gitHubPos.y + gitHubSize.y)))
+		{		
+			DrawTextEx(font, "https://github.com/juandigilio", gitHubPos, fontSize * 0.2f, spacing / 8.0f, GREEN);
+
+			if (!isClicking)
+			{
+				isClicking = true;
+
+				PlaySound(click);
+			}
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			{
+				PlaySound(clickPressed);
+				OpenURL("https://github.com/juandigilio");
+			}	
+		}
+		else
+		{
+			isClicking = false;
 		}
 	}
 
@@ -185,9 +260,11 @@ static void DrawMain()
 	DrawTextEx(font, "Exit", exitPos, fontSize, spacing, RAYWHITE);
 }
 
-void ShowMenu(GameSceen& currentSceen)
+static void ShowMenu(GameSceen& currentSceen)
 {
 	DrawMain();
+
+	UpdateMusicStream(menuMusic);
 
 	GetInput(currentSceen);
 }
@@ -239,6 +316,8 @@ static void DrawInstrucions()
 static void ShowInstructions(GameSceen& currentSceen)
 {
 	DrawInstrucions();
+
+	UpdateMusicStream(menuMusic);
 
 	GetInput(currentSceen);
 }
@@ -293,9 +372,139 @@ static void DrawCredits()
 	DrawTextEx(font, "https://github.com/juandigilio", gitHubPos, fontSize * 0.2f, spacing / 8.0f, RAYWHITE);
 }
 
-void ShowCredits(GameSceen& currentSceen)
+static void ShowCredits(GameSceen& currentSceen)
 {
 	DrawCredits();
+
+	UpdateMusicStream(menuMusic);
+
+	GetInput(currentSceen);
+}
+
+static void GetPausedInput(GameSceen& currentSceen)
+{
+	int mouseX = GetMouseX();
+	int mouseY = GetMouseY();
+
+	if ((mouseX > backButtonPos.x && mouseX < backButtonPos.x + backButton.width) && (mouseY > backButtonPos.y && mouseY < backButtonPos.y + backButton.height))
+	{
+		DrawTextureV(backButtonAct, backButtonPos, WHITE);
+
+		if (!isClicking)
+		{
+			isClicking = true;
+
+			PlaySound(click);
+		}
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			PlaySound(clickPressed);
+			currentSceen = GameSceen::GAME;
+		}
+	}
+	else if ((mouseX > menuButtonPos.x && mouseX < menuButtonPos.x + menuButton.width) && (mouseY > menuButtonPos.y && mouseY < menuButtonPos.y + menuButton.height))
+	{
+		DrawTextureV(menuButtonAct, menuButtonPos, WHITE);
+
+		if (!isClicking)
+		{
+			isClicking = true;
+
+			PlaySound(click);
+		}
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			PlaySound(clickPressed);
+			currentSceen = GameSceen::MENU;
+			loading = true;
+			StopMusicStream(gameLoopMusic);
+			PlayMusicStream(menuMusic);
+		}
+	}
+	else if ((mouseX > exitButtonPos.x && mouseX < exitButtonPos.x + exitButton.width) && (mouseY > exitButtonPos.y && mouseY < exitButtonPos.y + exitButton.height))
+	{
+		DrawTextureV(exitButtonAct, exitButtonPos, WHITE);
+
+		if (!isClicking)
+		{
+			isClicking = true;
+
+			PlaySound(click);
+		}
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			PlaySound(clickPressed);
+			currentSceen = GameSceen::EXIT;
+		}
+	}
+	else
+	{
+		isClicking = false;
+	}
+
+}
+
+static void PauseGame(Player player, Asteroid* asteroids, Asteroid* halfAsteroids, Asteroid* quarterAsteroids, GameSceen& currentSceen)
+{
+	DrawGame(player, asteroids, halfAsteroids, quarterAsteroids);
+
+	smallWindowPos.x = (screenWidth / 2.0f) - (smallWindow.width / 2.0f);
+	smallWindowPos.y = (screenHeight / 2.0f) - (smallWindow.height / 2.0f);
+
+	DrawTextureV(smallWindow, smallWindowPos, WHITE);
+	DrawTextureV(backButton, backButtonPos, WHITE);
+	DrawTextureV(menuButton, menuButtonPos, WHITE);
+	DrawTextureV(exitButton, exitButtonPos, WHITE);
+
+	Vector2 textPos;
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "PAUSED GAME", fontSize * 0.45f, spacing).x / 2.0f;
+	textPos.y = smallWindowPos.y + 45.0f;
+	DrawTextEx(font, "PAUSED GAME", textPos, fontSize * 0.45f, spacing, RAYWHITE);
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Press ESC to continue", fontSize * 0.35f, spacing / 8.0f).x / 2.0f;
+	textPos.y += 90;
+	DrawTextEx(font, "Press ESC to continue", textPos, fontSize * 0.35f, spacing / 8.0f, RAYWHITE);
+
+	GetPausedInput(currentSceen);
+}
+
+static void DrawResults(Player player)
+{
+	Vector2 textPos;
+
+	smallWindowPos.x = (screenWidth / 2.0f) - (smallWindow.width / 2.0f);
+	smallWindowPos.y = (screenHeight / 2.0f) - (smallWindow.height / 2.0f);
+
+	DrawTexture(background, 0, 0, WHITE);
+	DrawTextureV(smallWindow, smallWindowPos, WHITE);
+	DrawTextureV(backButton, backButtonPos, WHITE);
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "RESULTS", fontSize * 0.6f, spacing / 4.0f).x / 2.0f;
+	textPos.y = smallWindowPos.y + 30;
+	DrawTextEx(font, "RESULTS", textPos, fontSize * 0.6f, spacing / 4.0f, RAYWHITE);
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "Your score:     ", fontSize * 0.4f, spacing / 8.0f).x / 2.0f;
+	textPos.y += 75;
+	DrawTextEx(font, "Your score: ", textPos, fontSize * 0.4f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x += MeasureTextEx(font, "Your score: ", fontSize * 0.4f, spacing / 8.0f).x;
+	DrawTextEx(font, TextFormat("%01i", player.totalPoints), textPos, fontSize * 0.4f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x = (screenWidth / 2) - MeasureTextEx(font, "High score:     ", fontSize * 0.4f, spacing / 8.0f).x / 2.0f;
+	textPos.y += 40;
+	DrawTextEx(font, "High score: ", textPos, fontSize * 0.4f, spacing / 8.0f, RAYWHITE);
+
+	textPos.x += MeasureTextEx(font, "High score: ", fontSize * 0.4f, spacing / 8.0f).x;
+	DrawTextEx(font, TextFormat("%01i", highScore), textPos, fontSize * 0.4f, spacing / 8.0f, RAYWHITE);
+}
+
+static void ShowResults(Player& player, GameSceen& currentSceen)
+{
+	DrawResults(player);
 
 	GetInput(currentSceen);
 }
@@ -308,13 +517,19 @@ void StartUp()
 
 	Asteroid* asteroids = new Asteroid[asteroidsQnty];
 	Asteroid* halfAsteroids = new Asteroid[halfAsteroidsQnty];
-	Asteroid* cuarterAsteroids = new Asteroid[quarterAsteroidsQnty];
+	Asteroid* quarterAsteroids = new Asteroid[quarterAsteroidsQnty];
 
 	srand(static_cast<unsigned>(time(NULL)));
 
+	SetConfigFlags(FLAG_MSAA_4X_HINT);
+
 	InitWindow(screenWidth, screenHeight, "After-Roids");
 
+	InitAudioDevice();
+
 	InitMenu();
+
+	PlayMusicStream(menuMusic);
 
 	while (currentSceen != GameSceen::EXIT)
 	{
@@ -330,16 +545,17 @@ void StartUp()
 			}
 			case GameSceen::GAME:
 			{
-				Play(player, asteroids, halfAsteroids, cuarterAsteroids, currentSceen);
+				Play(player, asteroids, halfAsteroids, quarterAsteroids, currentSceen);
 				break;
 			}
 			case GameSceen::RESULTS:
 			{
-				
+				ShowResults(player, currentSceen);
 				break;
 			}
 			case GameSceen::PAUSE:
 			{
+				PauseGame(player, asteroids, halfAsteroids, quarterAsteroids, currentSceen);
 				break;
 			}
 			case GameSceen::INSTRUCTIONS:
@@ -356,7 +572,7 @@ void StartUp()
 			{
 				delete[] asteroids;
 				delete[] halfAsteroids;
-				delete[] cuarterAsteroids;
+				delete[] quarterAsteroids;
 
 				CloseWindow();
 

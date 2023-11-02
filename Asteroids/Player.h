@@ -34,12 +34,15 @@ struct Player
     float targetRotation{};
     float radius{};
 	int totalPoints = 0;
+    int thousandCouner = 0;
 	int availableLives = 3;
     bool isColliding = false;
     float lastCollide = 0.0f;
     bool isAlive = true;
 	Texture2D texture{};
     Rectangle source{};
+    Sound shoot{};
+    Sound thousand{};
 
     Bullet bullets[maxBulletsQnty]{};
 

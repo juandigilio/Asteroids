@@ -17,15 +17,13 @@ namespace Assets
 	extern Texture2D smallWindow;
 	extern Texture2D backButton;
 	extern Texture2D backButtonAct;
+	extern Texture2D menuButton;
+	extern Texture2D menuButtonAct;
+	extern Texture2D exitButton;
+	extern Texture2D exitButtonAct;
 
 	extern Sound click;
-
-	extern Font font;
-	extern float fontSize;
-	extern float spacing;
-
-	extern int menuSizeX;
-	extern int menuSizeY;
+	extern Sound clickPressed;
 
 	extern Vector2 playPos;
 	extern Vector2 instructionsPos;
@@ -35,8 +33,12 @@ namespace Assets
 	extern Vector2 bigWindowPos;
 	extern Vector2 smallWindowPos;
 	extern Vector2 backButtonPos;
+	extern Vector2 menuButtonPos;
+	extern Vector2 exitButtonPos;
 	extern Vector2 gitHubPos;
 	extern Vector2 gitHubSize;
+
+	extern bool isClicking;
 }
 
 void StartUp();
